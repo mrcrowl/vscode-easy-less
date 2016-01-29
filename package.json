@@ -1,0 +1,43 @@
+{
+    "name": "easy-less",
+    "displayName": "Easy LESS",
+    "description": "Auto-compile LESS to CSS on save",
+    "version": "1.0.7",
+    "publisher": "mrcrowl",
+    "engines": {
+        "vscode": "^0.10.1"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onLanguage:less",
+        "onCommand:easyLess.compile"
+    ],
+    "main": "./out/easyLess",
+    "contributes": {
+        "commands": [
+            {
+                "command": "easyLess.compile",
+                "title": "Compile LESS to CSS"
+            }
+        ]
+    },
+    
+    "scripts": {
+        "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+        "compile": "node ./node_modules/vscode/bin/compile -watch -p ./"
+    },
+    "icon": "icon.png",
+    "galleryBanner": {
+        "color": "#667",
+        "theme": "dark"
+    },
+    "dependencies": {
+        "less": "^2.5.3"
+    },
+    "devDependencies": {
+        "typescript": "^1.6.2",
+        "vscode": "0.10.x"
+    }
+}
