@@ -2,7 +2,7 @@
     "name": "easy-less",
     "displayName": "Easy LESS",
     "description": "Auto-compile LESS to CSS on save",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "publisher": "mrcrowl",
     "engines": {
         "vscode": "^0.10.1"
@@ -14,6 +14,10 @@
         "onLanguage:less",
         "onCommand:easyLess.compile"
     ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mrcrowl/vscode-easy-less"
+    },
     "main": "./out/easyLess",
     "contributes": {
         "commands": [
