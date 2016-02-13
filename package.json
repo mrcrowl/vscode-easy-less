@@ -2,7 +2,7 @@
     "name": "easy-less",
     "displayName": "Easy LESS",
     "description": "Auto-compile LESS to CSS on save",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "publisher": "mrcrowl",
     "engines": {
         "vscode": "^0.10.1"
@@ -20,6 +20,33 @@
     },
     "main": "./out/easyLess",
     "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "Easy LESS configuration",
+            "properties": {
+                "less.compile": {
+                    "type": "object",
+                    "description": "Configuration options for Easy LESS extension.",
+                    "properties": {
+                        "compress": {
+                            "type": "boolean",
+                            "description": "Compress .css files? (removes unnecessary white-space)",
+                            "default": false
+                        },
+                        "sourceMap": {
+                            "type": "boolean",
+                            "description": "Should .map files be generated?",
+                            "default": false
+                        },
+                        "out": {
+                            "type": ["boolean"],
+                            "description": "Default 'out' setting. Set to false to default to no output.",
+                            "default": false
+                        }
+                    }
+                }
+            }
+        },
         "commands": [
             {
                 "command": "easyLess.compile",
@@ -27,7 +54,6 @@
             }
         ]
     },
-    
     "scripts": {
         "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
         "compile": "node ./node_modules/vscode/bin/compile -watch -p ./"
