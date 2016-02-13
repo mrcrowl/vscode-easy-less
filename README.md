@@ -33,7 +33,7 @@ Easily work with LESS files in Visual Studio Code.
  2. Hit Ctrl/Cmd+S to save your file.
  3. A `.css` file is automatically generated.
 
-_N.B. Also available from the command palette as "Compile LESS to CSS".
+N.B. Also available from the command palette as "Compile LESS to CSS".
 
 # Advanced Usage
 
