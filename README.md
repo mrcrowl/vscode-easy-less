@@ -44,6 +44,7 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
  * Alternatively, settings can go in _User Settings_ or _Workspace Settings_ for global defaults.
  * Use the `"less.compile"` key.
  * Example `settings.json` file: 
+    
     ```json
     {    
         "less.compile": {
