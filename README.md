@@ -1,3 +1,14 @@
+
+> #**APOLOGY**#
+>
+> Sorry to existing users! Version 1.1.x broke the extension entirely.  
+>
+> The issue has since been resolved, in v1.2.0+  
+>
+> To update:
+> 
+>       Press F1 > Extensions: Show Outdated Extensions > Easy LESS
+
 # Overview
 
 Easily work with LESS files in Visual Studio Code.
@@ -160,4 +171,5 @@ Settings are read and applied in the following order:
 # Acknowledgements
 
  * Configuration concepts borrowed from [Jonathan Diehl's](#https://github.com/jdiehl) [brackets-less-autocompile](https://github.com/jdiehl/brackets-less-autocompile).
- * [thecosss](https://github.com/thecosss)  
+ * [thecosss](https://github.com/thecosss)
+ * [pnkr](https://github.com/pnkr)
