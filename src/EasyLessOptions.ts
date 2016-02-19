@@ -3,7 +3,7 @@ import * as less from 'less';
 
 interface EasyLessOptions extends Less.Options
 {
-    main?: string;
+    main?: string | string[];
     out?: string | boolean;
     sourceMap?: any;
     // sourceMapURL?: string;

@@ -2,7 +2,7 @@
     "name": "easy-less",
     "displayName": "Easy LESS",
     "description": "Auto-compile LESS to CSS on save",
-    "version": "1.2.4",
+    "version": "1.2.5",
     "publisher": "mrcrowl",
     "engines": {
         "vscode": "^0.10.7"
@@ -46,9 +46,14 @@
                             "default": false
                         },
                         "out": {
-                            "type": ["boolean"],
+                            "type": ["boolean", "null"],
                             "description": "Default 'out' setting. Set to false to default to no output.",
                             "default": false
+                        },
+                        "main": {
+                            "type": ["string", "array"],
+                            "description": "Compile specific .less file(s) when any .less file is saved.",
+                            "default": "main.less"
                         }
                     }
                 }

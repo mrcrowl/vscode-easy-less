@@ -1,25 +1,31 @@
 var less = require('less');
 var mkpath = require('mkpath');
 var path = require('path');
-var extend = require('extend');
 var fs = require('fs');
-var SUPPORTED_PER_FILE_OPTS = {
-    "main": true,
-    "out": true,
-    "sourceMap": true,
-    "compress": true,
-};
+var FileOptionsParser = require("./FileOptionsParser");
 // compile the given less file
 function compile(lessFile, defaults) {
     return readFilePromise(lessFile).then(function (buffer) {
         var content = buffer.toString();
-        var options = parseFileOptions(content, defaults);
+        var options = FileOptionsParser.parse(content, defaults);
         var lessPath = path.dirname(lessFile);
         // main is set: compile the referenced file instead
         if (options.main) {
-            var mainLessFile = path.resolve(lessPath, options.main);
-            if (mainLessFile != lessFile) {
-                return compile(mainLessFile, defaults);
+            var mainFilePaths = resolveMainFilePaths(options.main, lessPath, lessFile);
+            var lastPromise = null;
+            var promiseChainer = function (lastPromise, nextPromise) { return lastPromise.then(function () { return nextPromise; }); };
+            if (mainFilePaths && mainFilePaths.length > 0) {
+                for (var _i = 0; _i < mainFilePaths.length; _i++) {
+                    var filePath = mainFilePaths[_i];
+                    var compilePromise = compile(filePath, defaults);
+                    if (lastPromise) {
+                        lastPromise = promiseChainer(lastPromise, compilePromise);
+                    }
+                    else {
+                        lastPromise = compilePromise;
+                    }
+                }
+                return lastPromise;
             }
         }
         // out 
@@ -76,29 +82,22 @@ function compile(lessFile, defaults) {
     });
 }
 exports.compile = compile;
-function parseFileOptions(content, defaults) {
-    var options = extend({}, defaults);
-    var firstLine = content.substr(0, content.indexOf('\n'));
-    var match = /^\s*\/\/\s*(.+)/.exec(firstLine);
-    if (match) {
-        for (var _i = 0, _a = match[1].split(','); _i < _a.length; _i++) {
-            var item = _a[_i];
-            var i = item.indexOf(':');
-            if (i < 0) {
-                continue;
-            }
-            var key = item.substr(0, i).trim();
-            if (!SUPPORTED_PER_FILE_OPTS.hasOwnProperty(key)) {
-                continue;
-            }
-            var value = item.substr(i + 1).trim();
-            if (value.match(/^(true|false|undefined|null|[0-9]+)$/)) {
-                value = eval(value);
-            }
-            options[key] = value;
-        }
+function resolveMainFilePaths(main, lessPath, currentLessFile) {
+    var mainFiles;
+    if (typeof main === "string") {
+        mainFiles = [main];
     }
-    return options;
+    else if (Array.isArray(main)) {
+        mainFiles = main;
+    }
+    else {
+        mainFiles = [];
+    }
+    var resolvedMailFilePaths = mainFiles.map(function (mainFile) { return path.resolve(lessPath, mainFile); });
+    if (resolvedMailFilePaths.indexOf(currentLessFile) >= 0) {
+        return []; // avoid infinite loops
+    }
+    return resolvedMailFilePaths;
 }
 // writes a file's contents in a path where directories may or may not yet exist
 function writeFileContents(filepath, content) {

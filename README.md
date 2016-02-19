@@ -51,9 +51,9 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
 
 ## Project-Wide & Global Configuration
 
- * Project-wide settings are configured using the standard `settings.json` file.
+ * Project-wide settings are configured using the standard `settings.json` file  (i.e. _Workspace Settings_).
  * `settings.json` must exist in the `.vscode` directory at the root level of your project.
- * Alternatively, settings can go in _User Settings_ or _Workspace Settings_ for global defaults.
+ * Alternatively, settings can go in _User Settings_ for global defaults.
  * Use the `"less.compile"` key.
  * Example `settings.json` file: 
     
@@ -83,10 +83,11 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
 
 ## Settings
    
-`main: { filepath: string }`
+`main: { filepath: string | string[] }`
  * Compiles a different less file _instead_ of this one.
  * All other settings are ignored.
  * Filepath is relative to the current file.
+ * Multiple main files can be specified (see [FAQ](#faq)). 
  
 `out: { boolean | filepath: string }`
  * Redirects the css output to a different file.  
@@ -106,10 +107,9 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
 
 Settings are read and applied in the following order:
 
- 1. Workspace Settings
- 2. User Settings
- 3. Project-wide `settings.json`
- 4. Per-file Settings
+ 1. User Settings
+ 2. Project-wide `settings.json` (aka Workspace Settings)
+ 3. Per-file Settings
  
 # FAQ
 
@@ -168,6 +168,28 @@ Settings are read and applied in the following order:
     >   border-radius: @radius;
     > }
     > ```
+    
+ 5. Is it possible to have multiple "main" .less files?
+ 
+    > Yes, multiple main files can be specified in ways:
+    > 
+    > * In _settings.json_, using a string array:
+    >
+    >   `.vscode/settings.json`: 
+    >   ```json
+    >   {    
+    >       "less.compile": {
+    >           "main": ["main-one.less", "main-two.less"]
+    >       }
+    >   }
+    >   ```   
+    >
+    > * _Per file_: by specifying the `main` setting key more than once:
+    >
+    >   ```less
+    >   // main: main-one.less, main: main-two.less
+    >   ```
+   
     
 # Acknowledgements
 

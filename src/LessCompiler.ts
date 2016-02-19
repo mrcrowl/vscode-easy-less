@@ -5,13 +5,7 @@ import * as extend from 'extend'
 import * as fs from 'fs'
 
 import EasyLessOptions = require("./EasyLessOptions");
-
-const SUPPORTED_PER_FILE_OPTS = {
-    "main": true,
-    "out": true,
-    "sourceMap": true,
-    "compress": true,
-};
+import FileOptionsParser = require("./FileOptionsParser");
 
 // compile the given less file
 export function compile(lessFile: string, defaults: EasyLessOptions): Promise<void>
@@ -19,16 +13,30 @@ export function compile(lessFile: string, defaults: EasyLessOptions): Promise<vo
     return readFilePromise(lessFile).then(buffer =>
     {
         let content: string = buffer.toString();
-        let options: EasyLessOptions = parseFileOptions(content, defaults);
+        let options: EasyLessOptions = FileOptionsParser.parse(content, defaults);
         let lessPath: string = path.dirname(lessFile);
 
         // main is set: compile the referenced file instead
         if (options.main)
         {
-            let mainLessFile = path.resolve(lessPath, options.main);
-            if (mainLessFile != lessFile)
+            let mainFilePaths: string[] = resolveMainFilePaths(options.main, lessPath, lessFile);
+            let lastPromise: Promise<void> = null;
+            let promiseChainer = (lastPromise: Promise<void>, nextPromise: Promise<void>) => lastPromise.then(() => nextPromise);
+            if (mainFilePaths && mainFilePaths.length > 0)
             {
-                return compile(mainLessFile, defaults);
+                for (let filePath of mainFilePaths)
+                {
+                    let compilePromise = compile(filePath, defaults);
+                    if (lastPromise)
+                    {
+                        lastPromise = promiseChainer(lastPromise, compilePromise);
+                    }
+                    else
+                    {
+                        lastPromise = compilePromise;
+                    }
+                }
+                return lastPromise;
             }
         }
 
@@ -82,7 +90,7 @@ export function compile(lessFile: string, defaults: EasyLessOptions): Promise<vo
             {
                 sourceMapFilename = cssFile + '.map';
             }
-            
+
             options.sourceMap = sourceMapOptions;
         }        
         
@@ -103,37 +111,30 @@ export function compile(lessFile: string, defaults: EasyLessOptions): Promise<vo
     });
 }
 
-function parseFileOptions(content: string, defaults: EasyLessOptions): EasyLessOptions
+
+function resolveMainFilePaths(main: string | string[], lessPath: string, currentLessFile: string): string[]
 {
-    let options: EasyLessOptions = extend({}, defaults);
-    let firstLine: string = content.substr(0, content.indexOf('\n'));
-    let match: RegExpExecArray = /^\s*\/\/\s*(.+)/.exec(firstLine);
-
-    if (match) 
+    let mainFiles: string[];
+    if (typeof main === "string")
     {
-        for (let item of match[1].split(',')) // string[]
-        {
-            let i: number = item.indexOf(':');
-            if (i < 0)
-            {
-                continue;
-            }
-            let key: string = item.substr(0, i).trim();
-            if (!SUPPORTED_PER_FILE_OPTS.hasOwnProperty(key))
-            {
-                continue;
-            }
-
-            let value: string = item.substr(i + 1).trim();
-            if (value.match(/^(true|false|undefined|null|[0-9]+)$/))
-            {
-                value = eval(value);
-            }
-            options[key] = value;
-        }
+        mainFiles = [main];
+    }
+    else if (Array.isArray(main))
+    {
+        mainFiles = main;
+    }
+    else
+    {
+        mainFiles = [];
+    }
+   
+    let resolvedMailFilePaths: string[] =  mainFiles.map(mainFile => path.resolve(lessPath, mainFile));
+    if (resolvedMailFilePaths.indexOf(currentLessFile) >= 0)
+    {
+        return []; // avoid infinite loops
     }
 
-    return options;
+    return resolvedMailFilePaths;
 }
 
 // writes a file's contents in a path where directories may or may not yet exist
