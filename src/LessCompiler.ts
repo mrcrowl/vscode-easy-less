@@ -53,7 +53,12 @@ export function compile(lessFile: string, defaults: EasyLessOptions): Promise<vo
         {
             // out is set: output to the given file name
             cssRelativeFilename = out;
-            if (path.extname(cssRelativeFilename) === '')
+            // check whether is a folder first
+            if (cssRelativeFilename.slice(-1) === path.sep)
+            {
+                cssRelativeFilename += path.parse(lessFile).name + ".css";
+            }
+            else if (path.extname(cssRelativeFilename) === '')
             {
                 cssRelativeFilename += '.css';
             }
