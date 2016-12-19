@@ -218,6 +218,7 @@ Settings are read and applied in the following order:
     >         "main": ["${workspaceRoot}\\css\\main.less"]
     >     }
     > }
+    > ```
 
  8. How do I generate sourcemap (`*.css.map`) files?
 
@@ -229,6 +230,7 @@ Settings are read and applied in the following order:
     >         "sourceMap": true
     >     }
     > }
+    > ```
    
     
 # Acknowledgements
