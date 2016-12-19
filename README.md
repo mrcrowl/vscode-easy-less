@@ -202,14 +202,23 @@ Settings are read and applied in the following order:
 
     > Yes, the variable `${workspaceRoot}` can be used within the `main` or `out` parameters:
     >
-    >   `.vscode/settings.json`: 
-    >   ```json
-    >   {    
-    >       "less.compile": {
-    >           "main": ["${workspaceRoot}\\css\\main.less"]
-    >       }
-    >   }
+    > `.vscode/settings.json`: 
+    > ```json
+    > {    
+    >     "less.compile": {
+    >         "main": ["${workspaceRoot}\\css\\main.less"]
+    >     }
+    > }
 
+ 8. How do I generate sourcemap (`*.css.map`) files?
+
+    > `.vscode/settings.json`: 
+    > ```json
+    > {    
+    >     "less.compile": {
+    >         "sourceMap": true
+    >     }
+    > }
    
     
 # Acknowledgements
