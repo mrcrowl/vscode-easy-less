@@ -107,6 +107,7 @@ Settings are read and applied in the following order:
  1. How do I redirect the output to a separate file?  
     
     > Add the following line to the head of your less file:
+    >
     > ```javascript
     > // out: new-file.css
     > ```
@@ -116,10 +117,11 @@ Settings are read and applied in the following order:
     > Specify the out parameter in the `settings.json` file, as a relative or absoluate path, 
     > with a trailing slash (`/` or `\\`).  
     >
-    > Tip: You can use the environment variable 
+    > Tip: You can use the environment variable
     > `${workspaceRoot}` to specify paths relative to the workspace:
     >
     > `.vscode/settings.json`: 
+    >
     > ```json
     > {    
     >     "less.compile": {
@@ -131,6 +133,7 @@ Settings are read and applied in the following order:
  3. How do I supress compiling this less file / compile a _different_ less file than the one being edited?  
     
     > Add a reference to the master.less file to the head of the imported less file:
+    >
     > ```javascript
     > // main: master.less
     > ```
@@ -138,6 +141,7 @@ Settings are read and applied in the following order:
  4. How do I supress the compilation of a single less file?
 
     > Set `out` to false (or null) in a comment at the top of the .less file:
+    >
     > ```less
     > // out: false
     > ```
@@ -148,6 +152,7 @@ Settings are read and applied in the following order:
     > b. Override `out` for each `.less` file that you want to compile:  
     > 
     > `.vscode/settings.json`: 
+    >
     > ```json
     > {    
     >     "less.compile": {
@@ -157,6 +162,7 @@ Settings are read and applied in the following order:
     > ```
     >
     > `style.less`: (will be compiled to `style.css`)
+    >
     > ```less
     > // out: true
     >
@@ -168,6 +174,7 @@ Settings are read and applied in the following order:
     > ```
     > 
     > `mixins.less`: (no comment line, will not be compiled)
+    >
     > ```less
     > .border-radius(@radius) {    
     >   -webkit-border-radius: @radius;
@@ -184,6 +191,7 @@ Settings are read and applied in the following order:
     > * In _settings.json_, using a string array:
     >
     >   `.vscode/settings.json`: 
+    >
     >   ```json
     >   {    
     >       "less.compile": {
@@ -203,6 +211,7 @@ Settings are read and applied in the following order:
     > Yes, the variable `${workspaceRoot}` can be used within the `main` or `out` parameters:
     >
     > `.vscode/settings.json`: 
+    >
     > ```json
     > {    
     >     "less.compile": {
@@ -213,6 +222,7 @@ Settings are read and applied in the following order:
  8. How do I generate sourcemap (`*.css.map`) files?
 
     > `.vscode/settings.json`: 
+    >
     > ```json
     > {    
     >     "less.compile": {
