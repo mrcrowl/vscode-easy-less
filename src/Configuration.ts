@@ -10,20 +10,22 @@ export function getGlobalOptions(filename: string): EasyLessOptions {
     let configuredOptions: EasyLessOptions = vscode.workspace.getConfiguration("less").get<EasyLessOptions>("compile");
     let defaultOptions: EasyLessOptions = {
         plugins: [],
-        rootFileInfo: getRootFileInfo(lessFilenamePath)
+        rootFileInfo: getRootFileInfo(lessFilenamePath),
+        relativeUrls: true
     };
+    // defaultOptions.rootFileInfo.entryPath = undefined;
     return extend({}, defaultOptions, configuredOptions);
 }
 
 export function getRootFileInfo(parsedPath: path.ParsedPath): Less.RootFileInfo {
-    parsedPath.ext = ".css";
-    parsedPath.base = parsedPath.name + ".css";
+    parsedPath.ext = ".less";
+    parsedPath.base = parsedPath.name + ".less";
 
     return {
         filename: parsedPath.base,
         currentDirectory: parsedPath.dir,
         relativeUrls: true,
-        entryPath: null,
+        entryPath: parsedPath.dir,
         rootpath: null,
         rootFilename: null
     }
@@ -33,6 +35,7 @@ export interface EasyLessOptions extends Less.Options {
     main?: string | string[];
     out?: string | boolean;
     sourceMap?: any;
+    relativeUrls?: boolean;
     // sourceMapURL?: string;
     // sourceMapBasepath?: string;
     // sourceMapRootpath?: string;
