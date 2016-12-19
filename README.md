@@ -1,14 +1,4 @@
 
-> #**APOLOGY**#
->
-> Sorry to existing users! Version 1.1.x broke the extension entirely.  
->
-> The issue has since been resolved, in v1.2.0+  
->
-> To update:
-> 
->       Press F1 > Extensions: Show Outdated Extensions > Easy LESS
-
 # Overview
 
 Easily work with LESS files in Visual Studio Code.
