@@ -1,11 +1,11 @@
 
-import * as vscode from 'vscode'
-import * as less from 'less'
-import * as path from 'path'
-import * as fs from 'fs'
-import * as extend from 'extend'
+import * as vscode from 'vscode';
+import * as less from 'less';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as extend from 'extend';
 
-import EasyLessOptions = require("./EasyLessOptions");
+import Configuration = require("./Configuration");
 import LessCompiler = require("./LessCompiler");
 
 const ERROR_COLOR_CSS = "rgba(255,125,0,1)";
@@ -31,33 +31,11 @@ class CompileLessCommand
     {
     }
 
-    private getGlobalOptions(): EasyLessOptions
-    {
-        let lessFilenamePath: path.ParsedPath = path.parse(this.document.fileName);
-        lessFilenamePath.ext = ".css";
-        lessFilenamePath.base = lessFilenamePath.name + ".css";
-        let cssFilename: string = path.format(lessFilenamePath);
-
-        let configuredOptions: EasyLessOptions = vscode.workspace.getConfiguration("less").get<EasyLessOptions>("compile");
-        let defaultOptions: EasyLessOptions = {
-            plugins: [],
-            rootFileInfo: {
-                filename: lessFilenamePath.base,
-                currentDirectory: lessFilenamePath.dir,
-                relativeUrls: true,
-                entryPath: null,
-                rootpath: null,
-                rootFilename: null
-            }
-        };
-        return extend({}, defaultOptions, configuredOptions);
-    }
-
     public execute()
     {
         hideErrorMessage();
         
-        let globalOptions: EasyLessOptions = this.getGlobalOptions();
+        let globalOptions: Configuration.EasyLessOptions = Configuration.getGlobalOptions(this.document.fileName);
         let compilingMessage: vscode.Disposable = vscode.window.setStatusBarMessage("$(zap) Compiling less --> css");
         let startTime: number = Date.now();
         let renderPromise = LessCompiler.compile(this.document.fileName, globalOptions)

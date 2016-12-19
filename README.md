@@ -89,10 +89,11 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
  * Filepath is relative to the current file.
  * Multiple main files can be specified (see [FAQ](#faq)). 
  
-`out: { boolean | filepath: string }`
+`out: { boolean | filepath: string | folderpath: string }`
  * Redirects the css output to a different file.  
  * This setting can be used to override a project-wide `"out": false` setting, where you only want certain `.less` files to be generated.    
  * If filepath is used, but no file extension is specified, it will append `.css`
+ * If folderpath is used, the less filename will be used, but with the `.css` extension
  * Filepath is relative to the current file.
 
 `sourceMap: { boolean }`
@@ -119,22 +120,39 @@ Settings are read and applied in the following order:
     > ```javascript
     > // out: new-file.css
     > ```
+  
+ 2. How do I redirect all css output to a specific folder?  
     
- 2. How do I supress compiling this less file / compile a _different_ less file than the one being edited?  
+    > Specify the out parameter in the `settings.json` file, as a relative or absoluate path, 
+    > with a trailing slash (`/` or `\\`).  
+    >
+    > Tip: You can use the environment variable 
+    > `${workspaceRoot}` to specify paths relative to the workspace:
+    >
+    > `.vscode/settings.json`: 
+    > ```json
+    > {    
+    >     "less.compile": {
+    >         "out": "${workspaceRoot}\\css\\"
+    >     }
+    > }
+    > ```
+    
+ 3. How do I supress compiling this less file / compile a _different_ less file than the one being edited?  
     
     > Add a reference to the master.less file to the head of the imported less file:
     > ```javascript
     > // main: master.less
     > ```
 
- 3. How do I supress the compilation of a single less file?
+ 4. How do I supress the compilation of a single less file?
 
     > Set `out` to false (or null) in a comment at the top of the .less file:
     > ```less
     > // out: false
     > ```
 
- 4. How do I compile only _some_ of the .less files in my project?
+ 5. How do I compile only _some_ of the .less files in my project?
  
     > a. Default `"out"` setting to false in `settings.json`  
     > b. Override `out` for each `.less` file that you want to compile:  
@@ -169,7 +187,7 @@ Settings are read and applied in the following order:
     > }
     > ```
     
- 5. Is it possible to have multiple "main" .less files?
+ 6. Is it possible to have multiple "main" .less files?
  
     > Yes, multiple main files can be specified in ways:
     > 
@@ -189,6 +207,19 @@ Settings are read and applied in the following order:
     >   ```less
     >   // main: main-one.less, main: main-two.less
     >   ```
+
+ 7. Can I specify paths relative to the _workspace_, instead of relative to the _less_ file?
+
+    > Yes, the variable `${workspaceRoot}` can be used within the `main` or `out` parameters:
+    >
+    >   `.vscode/settings.json`: 
+    >   ```json
+    >   {    
+    >       "less.compile": {
+    >           "main": ["${workspaceRoot}\\css\\main.less"]
+    >       }
+    >   }
+
    
     
 # Acknowledgements
@@ -196,3 +227,4 @@ Settings are read and applied in the following order:
  * Configuration concepts borrowed from [Jonathan Diehl's](#https://github.com/jdiehl) [brackets-less-autocompile](https://github.com/jdiehl/brackets-less-autocompile).
  * [thecosss](https://github.com/thecosss)
  * [pnkr](https://github.com/pnkr)
+ * [elvis-macak](https://github.com/elvis-macak)

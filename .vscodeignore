@@ -8,4 +8,8 @@ src/**
 .gitattributes
 tsconfig.json
 vsc-extension-quickstart.md
+**.vsix
+**.zip
 icon.xcf
+.hgignore
+.vscodeignore

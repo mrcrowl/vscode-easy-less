@@ -3,17 +3,18 @@ import * as mkpath from 'mkpath'
 import * as path from 'path'
 import * as extend from 'extend'
 import * as fs from 'fs'
+import * as vscode from 'vscode';
 
-import EasyLessOptions = require("./EasyLessOptions");
+import Configuration = require("./Configuration");
 import FileOptionsParser = require("./FileOptionsParser");
 
 // compile the given less file
-export function compile(lessFile: string, defaults: EasyLessOptions): Promise<void>
+export function compile(lessFile: string, defaults: Configuration.EasyLessOptions): Promise<void>
 {
     return readFilePromise(lessFile).then(buffer =>
     {
         let content: string = buffer.toString();
-        let options: EasyLessOptions = FileOptionsParser.parse(content, defaults);
+        let options: Configuration.EasyLessOptions = FileOptionsParser.parse(content, defaults);
         let lessPath: string = path.dirname(lessFile);
 
         // main is set: compile the referenced file instead
@@ -26,7 +27,11 @@ export function compile(lessFile: string, defaults: EasyLessOptions): Promise<vo
             {
                 for (let filePath of mainFilePaths)
                 {
-                    let compilePromise = compile(filePath, defaults);
+                    let mainPath: path.ParsedPath = path.parse(filePath);
+                    let mainRootFileInfo = Configuration.getRootFileInfo(mainPath);
+                    let mainDefaults = extend({}, defaults, { rootFileInfo: mainRootFileInfo});
+                    let compilePromise = compile(filePath, mainDefaults);
+
                     if (lastPromise)
                     {
                         lastPromise = promiseChainer(lastPromise, compilePromise);
@@ -38,7 +43,7 @@ export function compile(lessFile: string, defaults: EasyLessOptions): Promise<vo
                 }
                 return lastPromise;
             }
-        }
+        } 
 
         // out 
         if (options.out === null || options.out === false)
@@ -52,9 +57,12 @@ export function compile(lessFile: string, defaults: EasyLessOptions): Promise<vo
         if (typeof out === "string")
         {
             // out is set: output to the given file name
-            cssRelativeFilename = out;
             // check whether is a folder first
-            if (cssRelativeFilename.slice(-1) === path.sep)
+            let interpolatedOut = intepolatePath(out); 
+
+            cssRelativeFilename = interpolatedOut;
+            let lastCharacter = cssRelativeFilename.slice(-1);
+            if (lastCharacter === '/' || lastCharacter === '\\')
             {
                 cssRelativeFilename += path.parse(lessFile).name + ".css";
             }
@@ -116,8 +124,12 @@ export function compile(lessFile: string, defaults: EasyLessOptions): Promise<vo
     });
 }
 
+function intepolatePath(this: void, path: string): string
+{
+    return (<string>path).replace(/\$\{workspaceRoot\}/g, vscode.workspace.rootPath);
+}
 
-function resolveMainFilePaths(main: string | string[], lessPath: string, currentLessFile: string): string[]
+function resolveMainFilePaths(this: void, main: string | string[], lessPath: string, currentLessFile: string): string[]
 {
     let mainFiles: string[];
     if (typeof main === "string")
@@ -133,17 +145,18 @@ function resolveMainFilePaths(main: string | string[], lessPath: string, current
         mainFiles = [];
     }
    
-    let resolvedMailFilePaths: string[] =  mainFiles.map(mainFile => path.resolve(lessPath, mainFile));
-    if (resolvedMailFilePaths.indexOf(currentLessFile) >= 0)
+    let interpolatedMainFilePaths: string[] = mainFiles.map(mainFile => intepolatePath(mainFile));
+    let resolvedMainFilePaths: string[] =  interpolatedMainFilePaths.map(mainFile => path.resolve(lessPath, mainFile));
+    if (resolvedMainFilePaths.indexOf(currentLessFile) >= 0)
     {
         return []; // avoid infinite loops
     }
 
-    return resolvedMailFilePaths;
+    return resolvedMainFilePaths;
 }
 
 // writes a file's contents in a path where directories may or may not yet exist
-function writeFileContents(filepath: string, content: any): Promise<any>
+function writeFileContents(this: void, filepath: string, content: any): Promise<any>
 {
     return new Promise((resolve, reject) =>
     {
@@ -159,7 +172,7 @@ function writeFileContents(filepath: string, content: any): Promise<any>
     });
 }
 
-function readFilePromise(filename: string): Promise<Buffer>
+function readFilePromise(this: void, filename: string): Promise<Buffer>
 {
     return new Promise((resolve, reject) =>
     {

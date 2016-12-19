@@ -1,5 +1,6 @@
+import Configuration = require("./Configuration");
+
 import * as extend from 'extend'
-import EasyLessOptions = require("./EasyLessOptions");
 
 const SUPPORTED_PER_FILE_OPTS = {
     "main": true,
@@ -12,7 +13,7 @@ const ARRAY_OPTS = {
     "main": true,
 };
 
-export function parse(line: string, defaults: EasyLessOptions): EasyLessOptions
+export function parse(line: string, defaults: Configuration.EasyLessOptions): Configuration.EasyLessOptions
 {
     // does line start with a comment?: //
     let commentMatch: RegExpExecArray = /^\s*\/\/\s*(.+)/.exec(line);
@@ -21,7 +22,7 @@ export function parse(line: string, defaults: EasyLessOptions): EasyLessOptions
         return defaults;
     }
 
-    let options: EasyLessOptions = extend({}, defaults);
+    let options: Configuration.EasyLessOptions = extend({}, defaults);
     let optionLine: string = commentMatch[1];
     let seenKeys: Object = {};
     for (let item of optionLine.split(',')) // string[]
