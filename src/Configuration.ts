@@ -11,7 +11,7 @@ export function getGlobalOptions(filename: string): EasyLessOptions {
     let defaultOptions: EasyLessOptions = {
         plugins: [],
         rootFileInfo: getRootFileInfo(lessFilenamePath),
-        relativeUrls: true
+        relativeUrls: false
     };
     // defaultOptions.rootFileInfo.entryPath = undefined;
     return extend({}, defaultOptions, configuredOptions);
@@ -24,7 +24,7 @@ export function getRootFileInfo(parsedPath: path.ParsedPath): Less.RootFileInfo 
     return {
         filename: parsedPath.base,
         currentDirectory: parsedPath.dir,
-        relativeUrls: true,
+        relativeUrls: false,
         entryPath: parsedPath.dir,
         rootpath: null,
         rootFilename: null
