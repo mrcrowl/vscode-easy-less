@@ -93,7 +93,37 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
 
 `compress: { boolean }` 
  * Compresses the css output by removing surplus white-space.
- 
+
+`relativeUrls: { boolean }`
+ * Specifies whether URLs in `@import`'ed should be rewritten relative to the importing file.
+ * Example of `true` option—given this folder structure:<br/>
+   `/main.less`<br/>
+   `/css/feature/feature.less`<br/>
+   `/css/feature/background.png`
+   
+   <hr/>
+
+   `/main.less`:
+   ```less
+   // relativeUrls: true
+   @import "css/feature/feature.less";
+   ```
+
+   `/css/feature/features.less`:
+   ```less
+   // main: ../../main.less
+   .feature {
+       background-image: url(background.png)
+   }
+   ```
+
+   `/main.css`: (output)
+   ```less
+   .feature {
+       background-image: url('css/feature/background.png')
+   }
+   ```
+
 ## Settings Cascade Order
 
 Settings are read and applied in the following order:

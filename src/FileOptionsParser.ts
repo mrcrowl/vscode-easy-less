@@ -7,6 +7,7 @@ const SUPPORTED_PER_FILE_OPTS = {
     "out": true,
     "sourceMap": true,
     "compress": true,
+    "relativeUrls": true
 };
 
 const ARRAY_OPTS = {
