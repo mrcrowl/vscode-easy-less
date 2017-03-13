@@ -78,6 +78,7 @@
   },
   "dependencies": {
     "less": "2.7.1",
+    "less-plugin-autoprefix": "^1.5.1",
     "mkpath": "^1.0.0"
   },
   "devDependencies": {

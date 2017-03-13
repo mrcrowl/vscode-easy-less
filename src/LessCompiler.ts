@@ -43,9 +43,9 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
                 }
                 return lastPromise;
             }
-        } 
+        }
 
-        // out 
+        // out
         if (options.out === null || options.out === false)
         {
             // is null or false: do not compile
@@ -58,7 +58,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
         {
             // out is set: output to the given file name
             // check whether is a folder first
-            let interpolatedOut = intepolatePath(out); 
+            let interpolatedOut = intepolatePath(out);
 
             cssRelativeFilename = interpolatedOut;
             let lastCharacter = cssRelativeFilename.slice(-1);
@@ -79,7 +79,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
 
         let cssFile = path.resolve(lessPath, cssRelativeFilename);
         delete options.out;
-        
+
         // sourceMap
         let sourceMapFilename: string;
         if (options.sourceMap)
@@ -92,23 +92,31 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
                 sourceMapRootpath: null,
                 sourceMapURL: null
             };
-            
+
             // options.sourceMap.sourceMapURL = options.sourceMapURL;
             // options.sourceMap.sourceMapBasepath = options.sourceMapBasepath || lessPath;
             // options.sourceMap.sourceMapRootpath = options.sourceMapRootpath;
             // options.sourceMap.outputSourceFiles = options.outputSourceFiles;
             // options.sourceMap.sourceMapFileInline = options.sourceMapFileInline;
-            
+
             if (!sourceMapOptions.sourceMapFileInline)
             {
                 sourceMapFilename = cssFile + '.map';
             }
 
             options.sourceMap = sourceMapOptions;
-        }        
-        
+        }
+
         // plugins
         options.plugins = [];
+        if (options.autoprefixer)
+        {
+            let LessPluginAutoPrefix = require('less-plugin-autoprefix');
+            let browsers = options.autoprefixer.split(",");
+            let autoprefixPlugin = new LessPluginAutoPrefix({ browsers });
+
+            options.plugins.push(autoprefixPlugin);
+        }
 
         // set up the parser
         return less.render(content, options).then(output =>
@@ -144,7 +152,7 @@ function resolveMainFilePaths(this: void, main: string | string[], lessPath: str
     {
         mainFiles = [];
     }
-   
+
     let interpolatedMainFilePaths: string[] = mainFiles.map(mainFile => intepolatePath(mainFile));
     let resolvedMainFilePaths: string[] =  interpolatedMainFilePaths.map(mainFile => path.resolve(lessPath, mainFile));
     if (resolvedMainFilePaths.indexOf(currentLessFile) >= 0)
@@ -176,7 +184,7 @@ function readFilePromise(this: void, filename: string): Promise<Buffer>
 {
     return new Promise((resolve, reject) =>
     {
-        fs.readFile(filename, (err: any, buffer: Buffer) => 
+        fs.readFile(filename, (err: any, buffer: Buffer) =>
         {
             if (err)
             {
