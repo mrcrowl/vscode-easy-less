@@ -1,4 +1,13 @@
 
+1.3.5
+=====
+
+## What's New
+ - Added settings:
+   - `**sourceMapFileInline**`: allows source maps to be output as part of the .css file.
+   - `**ieCompat**`: allows disabling the restriction that prevents inlining images >32KB.
+   - See README for more details
+
 1.3.4
 =====
 
