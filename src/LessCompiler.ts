@@ -29,7 +29,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
                 {
                     let mainPath: path.ParsedPath = path.parse(filePath);
                     let mainRootFileInfo = Configuration.getRootFileInfo(mainPath);
-                    let mainDefaults = extend({}, defaults, { rootFileInfo: mainRootFileInfo});
+                    let mainDefaults = extend({}, defaults, { rootFileInfo: mainRootFileInfo });
                     let compilePromise = compile(filePath, mainDefaults);
 
                     if (lastPromise)
@@ -43,7 +43,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
                 }
                 return lastPromise;
             }
-        } 
+        }
 
         // out 
         if (options.out === null || options.out === false)
@@ -58,7 +58,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
         {
             // out is set: output to the given file name
             // check whether is a folder first
-            let interpolatedOut = intepolatePath(out); 
+            let interpolatedOut = intepolatePath(out);
 
             cssRelativeFilename = interpolatedOut;
             let lastCharacter = cssRelativeFilename.slice(-1);
@@ -79,7 +79,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
 
         let cssFile = path.resolve(lessPath, cssRelativeFilename);
         delete options.out;
-        
+
         // sourceMap
         let sourceMapFilename: string;
         if (options.sourceMap)
@@ -88,25 +88,24 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
             let sourceMapOptions = <Less.SourceMapOption>{
                 outputSourceFiles: false,
                 sourceMapBasepath: lessPath,
-                sourceMapFileInline: false,
+                sourceMapFileInline: options.sourceMapFileInline,
                 sourceMapRootpath: null,
                 sourceMapURL: null
             };
-            
-            // options.sourceMap.sourceMapURL = options.sourceMapURL;
-            // options.sourceMap.sourceMapBasepath = options.sourceMapBasepath || lessPath;
-            // options.sourceMap.sourceMapRootpath = options.sourceMapRootpath;
-            // options.sourceMap.outputSourceFiles = options.outputSourceFiles;
-            // options.sourceMap.sourceMapFileInline = options.sourceMapFileInline;
-            
+
             if (!sourceMapOptions.sourceMapFileInline)
             {
                 sourceMapFilename = cssFile + '.map';
             }
 
             options.sourceMap = sourceMapOptions;
-        }        
-        
+
+            // options.sourceMap.sourceMapURL = options.sourceMapURL;
+            // options.sourceMap.sourceMapBasepath = options.sourceMapBasepath || lessPath;
+            // options.sourceMap.sourceMapRootpath = options.sourceMapRootpath;
+            // options.sourceMap.outputSourceFiles = options.outputSourceFiles;
+        }
+
         // plugins
         options.plugins = [];
 
@@ -144,9 +143,9 @@ function resolveMainFilePaths(this: void, main: string | string[], lessPath: str
     {
         mainFiles = [];
     }
-   
+
     let interpolatedMainFilePaths: string[] = mainFiles.map(mainFile => intepolatePath(mainFile));
-    let resolvedMainFilePaths: string[] =  interpolatedMainFilePaths.map(mainFile => path.resolve(lessPath, mainFile));
+    let resolvedMainFilePaths: string[] = interpolatedMainFilePaths.map(mainFile => path.resolve(lessPath, mainFile));
     if (resolvedMainFilePaths.indexOf(currentLessFile) >= 0)
     {
         return []; // avoid infinite loops

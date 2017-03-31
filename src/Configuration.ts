@@ -35,10 +35,10 @@ export interface EasyLessOptions extends Less.Options {
     out?: string | boolean;
     sourceMap?: any;
     relativeUrls?: boolean;
+    sourceMapFileInline?: boolean;
     // sourceMapURL?: string;
     // sourceMapBasepath?: string;
     // sourceMapRootpath?: string;
     // outputSourceFiles?: boolean;
-    // sourceMapFileInline?: boolean;
     // sourceMapFilename?: string;
 }
