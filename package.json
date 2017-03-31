@@ -39,9 +39,19 @@
               "description": "Compress .css files? (removes unnecessary white-space)",
               "default": false
             },
+            "ieCompat": {
+              "type": "boolean",
+              "description": "IE8 compatiblity mode? (restricts size of data-uri to 32KB)",
+              "default": true
+            },
             "sourceMap": {
               "type": "boolean",
               "description": "Should .map files be generated?",
+              "default": false
+            },
+            "sourceMapFileInline": {
+              "type": "boolean",
+              "description": "Should source maps be inlined within the .css file? (requires sourceMap: true)",
               "default": false
             },
             "out": {
