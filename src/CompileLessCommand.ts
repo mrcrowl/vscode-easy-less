@@ -7,21 +7,8 @@ import * as extend from 'extend';
 
 import Configuration = require("./Configuration");
 import LessCompiler = require("./LessCompiler");
-
-const ERROR_COLOR_CSS = "rgba(255,125,0,1)";
-const ERROR_DURATION_MS = 10000;
-const SUCCESS_DURATION_MS = 1500;
-
-let errorMessage: vscode.StatusBarItem;
-
-function hideErrorMessage()
-{
-    if (errorMessage)
-    {
-        errorMessage.hide();
-        errorMessage = null;
-    }
-}
+import StatusBarMessage = require("./StatusBarMessage");
+import StatusBarMessageTypes = require("./StatusBarMessageTypes");
 
 class CompileLessCommand
 {
@@ -33,10 +20,10 @@ class CompileLessCommand
 
     public execute()
     {
-        hideErrorMessage();
-        
+        StatusBarMessage.hideError();
+
         let globalOptions: Configuration.EasyLessOptions = Configuration.getGlobalOptions(this.document.fileName);
-        let compilingMessage: vscode.Disposable = vscode.window.setStatusBarMessage("$(zap) Compiling less --> css");
+        let compilingMessage = StatusBarMessage.show("$(zap) Compiling less --> css", StatusBarMessageTypes.INDEFINITE);
         let startTime: number = Date.now();
         let renderPromise = LessCompiler.compile(this.document.fileName, globalOptions)
             .then(() =>
@@ -45,7 +32,7 @@ class CompileLessCommand
                 compilingMessage.dispose();
                 this.lessDiagnosticCollection.set(this.document.uri, []);
 
-                vscode.window.setStatusBarMessage(`$(check) Less compiled in ${elapsedTime}ms`, SUCCESS_DURATION_MS);
+                StatusBarMessage.show(`$(check) Less compiled in ${elapsedTime}ms`, StatusBarMessageTypes.SUCCESS);
             })
             .catch((error: any) =>
             {
@@ -76,12 +63,8 @@ class CompileLessCommand
                 compilingMessage.dispose();
                 let diagnosis = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
                 this.lessDiagnosticCollection.set(this.document.uri, [diagnosis]);
-                errorMessage = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
-                errorMessage.text = "$(alert) Error compiling less (more detail in Errors and Warnings)";
-                errorMessage.command = "workbench.action.showErrorsWarnings";
-                errorMessage.color = ERROR_COLOR_CSS;
-                errorMessage.show();
-                setTimeout(hideErrorMessage, ERROR_DURATION_MS);
+
+                StatusBarMessage.show("$(alert) Error compiling less (more detail in Errors and Warnings)", StatusBarMessageTypes.ERROR);
             });
     }
 }

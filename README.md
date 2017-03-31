@@ -103,13 +103,13 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
    
    <hr/>
 
-   `/main.less`:
+   /main.less:
    ```less
    // relativeUrls: true
    @import "css/feature/feature.less";
    ```
 
-   `/css/feature/features.less`:
+   /css/feature/features.less:
    ```less
    // main: ../../main.less
    .feature {
@@ -117,7 +117,7 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
    }
    ```
 
-   `/main.css`: (output)
+   /main.css: (output)
    ```less
    .feature {
        background-image: url('css/feature/background.png')

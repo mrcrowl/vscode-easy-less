@@ -6,14 +6,13 @@ import * as extend from 'extend';
 
 export function getGlobalOptions(filename: string): EasyLessOptions {
     let lessFilenamePath: path.ParsedPath = path.parse(filename);
-
-    let configuredOptions: EasyLessOptions = vscode.workspace.getConfiguration("less").get<EasyLessOptions>("compile");
     let defaultOptions: EasyLessOptions = {
         plugins: [],
         rootFileInfo: getRootFileInfo(lessFilenamePath),
         relativeUrls: false
     };
-    // defaultOptions.rootFileInfo.entryPath = undefined;
+
+    let configuredOptions: EasyLessOptions = vscode.workspace.getConfiguration("less").get<EasyLessOptions>("compile");
     return extend({}, defaultOptions, configuredOptions);
 }
 
