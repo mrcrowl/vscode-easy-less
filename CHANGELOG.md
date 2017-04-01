@@ -1,18 +1,22 @@
 
-1.3.5-1.3.7
-=========== 
+**v1.3.5-1.3.8** (<small>March 2017</small>)
+=============================================
 
 ## What's New
  - Added settings:
-   - `**sourceMapFileInline**`: allows source maps to be output as part of the .css file.
-   - `**ieCompat**`: allows disabling the restriction that prevents inlining images >32KB.
-   - See README for more details
+   - **`sourceMapFileInline`**: allows source maps to be output as part of the .css file.  [v1.3.7]
+   - **`ieCompat`**: allows disabling the restriction that prevents inlining images >32KB.  [v1.3.7]
+   - See README for more details [v1.3.7]
+
+## Bug Fixes
+   - When the `sourceMap` option is `true`, the appropriate sourceMappingURL comment is now output
+     at the bottom of the .css file [v1.3.8]
 
 ## Apologies!
  - If you were unlucky enough to install v1.3.6 it would have been very broken. Sorry about that.
 
-1.3.4
-=====
+**v1.3.4** (<small>January 2017</small>)
+=============================================
 
 ## What's New
  - You can now specify the `relativeUrls` option (project-level or per-file):
@@ -23,8 +27,8 @@
 ## Bug Fixes
    - When compiling a main file `url` was adding an unnecessary level of path prefix to be pre-pended to the URL output. Also, `relativeUrls` was true by default, which caused this behaviour.
 
-1.3.3
-=====
+**v1.3.3:** (<small>December 2017</small>)
+=============================================
 
 ## What's New
  - The `out` option can now specify a folder path ([pull request 9](https://github.com/mrcrowl/vscode-easy-less/pull/9)).
