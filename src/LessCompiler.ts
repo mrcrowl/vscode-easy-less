@@ -54,6 +54,8 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
 
         let cssRelativeFilename: string;
         let out: string | boolean = options.out;
+        let baseFilename: string = path.parse(lessFile).name;
+
         if (typeof out === "string")
         {
             // out is set: output to the given file name
@@ -64,7 +66,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
             let lastCharacter = cssRelativeFilename.slice(-1);
             if (lastCharacter === '/' || lastCharacter === '\\')
             {
-                cssRelativeFilename += path.parse(lessFile).name + ".css";
+                cssRelativeFilename += baseFilename + ".css";
             }
             else if (path.extname(cssRelativeFilename) === '')
             {
@@ -74,14 +76,14 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
         else
         {
             // out is not set: output to the same basename as the less file
-            cssRelativeFilename = path.parse(lessFile).name + ".css";
+            cssRelativeFilename = baseFilename + ".css";
         }
 
         let cssFile = path.resolve(lessPath, cssRelativeFilename);
         delete options.out;
 
         // sourceMap
-        let sourceMapFilename: string;
+        let sourceMapFile: string;
         if (options.sourceMap)
         {
             // currently just has support for writing .map file to same directory
@@ -90,12 +92,12 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
                 sourceMapBasepath: lessPath,
                 sourceMapFileInline: options.sourceMapFileInline,
                 sourceMapRootpath: null,
-                sourceMapURL: null
             };
 
             if (!sourceMapOptions.sourceMapFileInline)
             {
-                sourceMapFilename = cssFile + '.map';
+                sourceMapFile = cssFile + '.map';
+                sourceMapOptions.sourceMapURL = "./" + baseFilename + ".css.map";
             }
 
             options.sourceMap = sourceMapOptions;
@@ -114,9 +116,9 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
         {
             return writeFileContents(cssFile, output.css).then(() =>
             {
-                if (output.map && sourceMapFilename)
+                if (output.map && sourceMapFile)
                 {
-                    return writeFileContents(sourceMapFilename, output.map);
+                    return writeFileContents(sourceMapFile, output.map);
                 }
             });
         });
