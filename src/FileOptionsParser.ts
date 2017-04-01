@@ -6,7 +6,10 @@ const SUPPORTED_PER_FILE_OPTS = {
     "main": true,
     "out": true,
     "sourceMap": true,
+    "sourceMapFileInline": true,
     "compress": true,
+    "relativeUrls": true,
+    "ieCompat": true,
 };
 
 const ARRAY_OPTS = {

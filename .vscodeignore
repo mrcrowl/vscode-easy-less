@@ -13,3 +13,5 @@ vsc-extension-quickstart.md
 icon.xcf
 .hgignore
 .vscodeignore
+test.less
+test.css

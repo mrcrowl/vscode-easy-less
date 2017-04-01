@@ -2,7 +2,7 @@
   "name": "easy-less",
   "displayName": "Easy LESS",
   "description": "Auto-compile LESS to CSS on save",
-  "version": "1.3.3",
+  "version": "1.3.9",
   "publisher": "mrcrowl",
   "engines": {
     "vscode": "^1.5.0"
@@ -13,7 +13,7 @@
   "activationEvents": [
     "onLanguage:less",
     "onCommand:easyLess.compile"
-  ],
+  ], 
   "repository": {
     "type": "git",
     "url": "https://github.com/mrcrowl/vscode-easy-less.git"
@@ -39,9 +39,19 @@
               "description": "Compress .css files? (removes unnecessary white-space)",
               "default": false
             },
+            "ieCompat": {
+              "type": "boolean",
+              "description": "IE8 compatiblity mode? (restricts size of data-uri to 32KB)",
+              "default": true
+            },
             "sourceMap": {
               "type": "boolean",
               "description": "Should .map files be generated?",
+              "default": false
+            },
+            "sourceMapFileInline": {
+              "type": "boolean",
+              "description": "Should source maps be inlined within the .css file? (requires sourceMap: true)",
               "default": false
             },
             "out": {
@@ -51,7 +61,7 @@
                 "null"
               ],
               "description": "Default 'out' setting. Set to false to default to no output.",
-              "default": false
+              "default": null
             },
             "main": {
               "type": [
@@ -60,6 +70,11 @@
               ],
               "description": "Compile specific .less file(s) when any .less file is saved.",
               "default": "main.less"
+            },
+            "relativeUrls": {
+              "type": "boolean",
+              "description": "Rewrite URLs from imported files, relative to the importing file (default: false)",
+              "default": false
             }
           }
         }
@@ -77,9 +92,17 @@
     "theme": "dark"
   },
   "dependencies": {
-    "less": "2.7.1",
-    "less-plugin-autoprefix": "^1.5.1",
-    "mkpath": "^1.0.0"
+    "less": "2.7.2",
+    "mkpath": "^1.0.0",
+    "errno": "^0.1.1",
+    "graceful-fs": "^4.1.2",
+    "image-size": "~0.5.0",
+    "mime": "^1.2.11",
+    "mkdirp": "^0.5.0",
+    "promise": "^7.1.1",
+    "request": "^2.72.0",
+    "source-map": "^0.5.3",
+    "less-plugin-autoprefix": "^1.5.1"
   },
   "devDependencies": {
     "typescript": "2.1.4",

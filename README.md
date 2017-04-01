@@ -88,12 +88,52 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
 
 `sourceMap: { boolean }`
  * Enables generation of source map files.
- * When enabled, a `.css.map` file will be output in the same direction as the `.css` file.
+ * When enabled, a `.css.map` file will be output in the same direction as the `.css` file (except when `sourceMapFileInline` is set, see below).
  * The `out` setting is respected.
+ 
+`sourceMapFileInline: { boolean }`
+ * Inline the source map within the css
+ * When enabled, the `.css` file outputted will contain an inline source-map
 
 `compress: { boolean }` 
  * Compresses the css output by removing surplus white-space.
- 
+
+`relativeUrls: { boolean }`
+ * Specifies whether URLs in `@import`'ed should be rewritten relative to the importing file.
+ * Has no effect on the `out` parameter.
+ * Example of `true` option—given this folder structure:<br/>
+   `/main.less`<br/>
+   `/css/feature/feature.less`<br/>
+   `/css/feature/background.png`
+   
+   <hr/>
+
+   /main.less:
+   ```less
+   // relativeUrls: true
+   @import "css/feature/feature.less";
+   ```
+
+   /css/feature/features.less:
+   ```less
+   // main: ../../main.less
+   .feature {
+       background-image: url(background.png)
+   }
+   ```
+
+   /main.css: (output)
+   ```less
+   .feature {
+       background-image: url('css/feature/background.png')
+   }
+   ```
+
+`ieCompat: { boolean }`
+ * IE8 compatibility mode (defaults to `true`)
+ * When `true`: prevents inlining of `data-uri`s that exceed 32KB
+ * When `false`: removes restriction on `data-uri` size
+
 ## Settings Cascade Order
 
 Settings are read and applied in the following order:
@@ -236,6 +276,4 @@ Settings are read and applied in the following order:
 # Acknowledgements
 
  * Configuration concepts borrowed from [Jonathan Diehl's](#https://github.com/jdiehl) [brackets-less-autocompile](https://github.com/jdiehl/brackets-less-autocompile).
- * [thecosss](https://github.com/thecosss)
- * [pnkr](https://github.com/pnkr)
- * [elvis-macak](https://github.com/elvis-macak)
+ * [thecosss](https://github.com/thecosss), [pnkr](https://github.com/pnkr), [elvis-macak](https://github.com/elvis-macak), [ep-mark](https://github.com/ep-mark), [icefrog](https://github.com/NateLing), Alejandro L and Kenneth Davila

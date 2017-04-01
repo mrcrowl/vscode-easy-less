@@ -29,7 +29,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
                 {
                     let mainPath: path.ParsedPath = path.parse(filePath);
                     let mainRootFileInfo = Configuration.getRootFileInfo(mainPath);
-                    let mainDefaults = extend({}, defaults, { rootFileInfo: mainRootFileInfo});
+                    let mainDefaults = extend({}, defaults, { rootFileInfo: mainRootFileInfo });
                     let compilePromise = compile(filePath, mainDefaults);
 
                     if (lastPromise)
@@ -54,6 +54,8 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
 
         let cssRelativeFilename: string;
         let out: string | boolean = options.out;
+        let baseFilename: string = path.parse(lessFile).name;
+
         if (typeof out === "string")
         {
             // out is set: output to the given file name
@@ -64,7 +66,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
             let lastCharacter = cssRelativeFilename.slice(-1);
             if (lastCharacter === '/' || lastCharacter === '\\')
             {
-                cssRelativeFilename += path.parse(lessFile).name + ".css";
+                cssRelativeFilename += baseFilename + ".css";
             }
             else if (path.extname(cssRelativeFilename) === '')
             {
@@ -74,34 +76,32 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
         else
         {
             // out is not set: output to the same basename as the less file
-            cssRelativeFilename = path.parse(lessFile).name + ".css";
+            cssRelativeFilename = baseFilename + ".css";
         }
 
         let cssFile = path.resolve(lessPath, cssRelativeFilename);
         delete options.out;
 
         // sourceMap
-        let sourceMapFilename: string;
+        let sourceMapFile: string;
         if (options.sourceMap)
         {
             // currently just has support for writing .map file to same directory
+            let lessPath: string = path.parse(lessFile).dir;
+            let cssPath: string = path.parse(cssFile).dir;
+            let lessRelativeToCss: string = path.relative(cssPath, lessPath);
+
             let sourceMapOptions = <Less.SourceMapOption>{
                 outputSourceFiles: false,
-                sourceMapBasepath: lessPath,
-                sourceMapFileInline: false,
-                sourceMapRootpath: null,
-                sourceMapURL: null
+                sourceMapBasepath: "lessPath",
+                sourceMapFileInline: options.sourceMapFileInline,
+                sourceMapRootpath: lessRelativeToCss,
             };
-
-            // options.sourceMap.sourceMapURL = options.sourceMapURL;
-            // options.sourceMap.sourceMapBasepath = options.sourceMapBasepath || lessPath;
-            // options.sourceMap.sourceMapRootpath = options.sourceMapRootpath;
-            // options.sourceMap.outputSourceFiles = options.outputSourceFiles;
-            // options.sourceMap.sourceMapFileInline = options.sourceMapFileInline;
-
+          
             if (!sourceMapOptions.sourceMapFileInline)
             {
-                sourceMapFilename = cssFile + '.map';
+                sourceMapFile = cssFile + '.map';
+                sourceMapOptions.sourceMapURL = "./" + baseFilename + ".css.map";
             }
 
             options.sourceMap = sourceMapOptions;
@@ -123,9 +123,9 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
         {
             return writeFileContents(cssFile, output.css).then(() =>
             {
-                if (output.map && sourceMapFilename)
+                if (output.map && sourceMapFile)
                 {
-                    return writeFileContents(sourceMapFilename, output.map);
+                    return writeFileContents(sourceMapFile, output.map);
                 }
             });
         });
@@ -154,7 +154,7 @@ function resolveMainFilePaths(this: void, main: string | string[], lessPath: str
     }
 
     let interpolatedMainFilePaths: string[] = mainFiles.map(mainFile => intepolatePath(mainFile));
-    let resolvedMainFilePaths: string[] =  interpolatedMainFilePaths.map(mainFile => path.resolve(lessPath, mainFile));
+    let resolvedMainFilePaths: string[] = interpolatedMainFilePaths.map(mainFile => path.resolve(lessPath, mainFile));
     if (resolvedMainFilePaths.indexOf(currentLessFile) >= 0)
     {
         return []; // avoid infinite loops
