@@ -4,6 +4,7 @@
 
 ## What's New
  - Added settings:
+   - **`autoprefixer`**: adds support for [postcss/autoprefixer plugin](https://github.com/postcss/autoprefixer).  [v1.4.0]
    - **`sourceMapFileInline`**: allows source maps to be output as part of the .css file.  [v1.3.7]
    - **`ieCompat`**: allows disabling the restriction that prevents inlining images >32KB.  [v1.3.7]
    - See README for more details [v1.3.7]

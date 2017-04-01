@@ -20,6 +20,8 @@ Easily work with LESS files in Visual Studio Code.
     * Alternative output file
     * Output supression
     * Compression
+
+ * [autoprefixer](https://github.com/postcss/autoprefixer) plugin included.
  
 # Default Settings
 
@@ -27,6 +29,7 @@ Easily work with LESS files in Visual Studio Code.
  * The `.css` file is output to the same directory as the source `.less` file.
  * Source maps (`.css.map` files) are _not_ output.
  * Compression is disabled.
+ * Auto-prefixer is disabled.
  
 # Basic Usage
 
@@ -129,6 +132,23 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
    }
    ```
 
+`autoprefixer: { string | string[] }` 
+ * When present, this enables the [autoprefixer plugin for less](https://github.com/postcss/autoprefixer) (included).  
+ * This plugin automatically adds/removes vendor-prefixes needed to support a set of browsers which you specify.
+ * The `autoprefixer` option _is_ the comma-separated list of `browsers` for autoprefixer to use (or alternatively a string array of them).
+ * Example of `autoprefixer` within `.vscode/settings.json`: 
+
+    ```json
+    {    
+        "less.compile": {
+            "autoprefixer": "> 5%, last 2 Chrome versions, not ie 6-9"
+        }
+    }
+    ```
+ * See [browserslist](https://github.com/ai/browserslist#queries) documentation for further examples of browser queries.
+ * **NOTE**: If used with the per-file configuration, the browsers listed _must_ be unquoted and semi-colon separated (because comma is already the directive separator): e.g.<br/>
+   `// autoprefixer: > 5%; last 2 Chrome versions; not ie 6-9, sourceMap: true, out: ../css/style.css`
+
 `ieCompat: { boolean }`
  * IE8 compatibility mode (defaults to `true`)
  * When `true`: prevents inlining of `data-uri`s that exceed 32KB
@@ -226,7 +246,7 @@ Settings are read and applied in the following order:
     
  6. Is it possible to have multiple "main" .less files?
  
-    > Yes, multiple main files can be specified in ways:
+    > Yes, multiple main files can be specified in these ways:
     > 
     > * In _settings.json_, using a string array:
     >
@@ -276,4 +296,4 @@ Settings are read and applied in the following order:
 # Acknowledgements
 
  * Configuration concepts borrowed from [Jonathan Diehl's](#https://github.com/jdiehl) [brackets-less-autocompile](https://github.com/jdiehl/brackets-less-autocompile).
- * [thecosss](https://github.com/thecosss), [pnkr](https://github.com/pnkr), [elvis-macak](https://github.com/elvis-macak), [ep-mark](https://github.com/ep-mark), [icefrog](https://github.com/NateLing), Alejandro L and Kenneth Davila
+ * [thecosss](https://github.com/thecosss), [pnkr](https://github.com/pnkr), [elvis-macak](https://github.com/elvis-macak), [ep-mark](https://github.com/ep-mark), [icefrog](https://github.com/NateLing), [gprasanth](https://github.com/gprasanth), Alejandro L and Kenneth Davila

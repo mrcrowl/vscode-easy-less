@@ -10,6 +10,7 @@ const SUPPORTED_PER_FILE_OPTS = {
     "compress": true,
     "relativeUrls": true,
     "ieCompat": true,
+    "autoprefixer": true,
 };
 
 const ARRAY_OPTS = {

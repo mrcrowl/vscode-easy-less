@@ -13,24 +13,24 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
 {
     return readFilePromise(lessFile).then(buffer =>
     {
-        let content: string = buffer.toString();
-        let options: Configuration.EasyLessOptions = FileOptionsParser.parse(content, defaults);
-        let lessPath: string = path.dirname(lessFile);
+        const content: string = buffer.toString();
+        const options: Configuration.EasyLessOptions = FileOptionsParser.parse(content, defaults);
+        const lessPath: string = path.dirname(lessFile);
 
         // main is set: compile the referenced file instead
         if (options.main)
         {
-            let mainFilePaths: string[] = resolveMainFilePaths(options.main, lessPath, lessFile);
+            const mainFilePaths: string[] = resolveMainFilePaths(options.main, lessPath, lessFile);
             let lastPromise: Promise<void> = null;
             let promiseChainer = (lastPromise: Promise<void>, nextPromise: Promise<void>) => lastPromise.then(() => nextPromise);
             if (mainFilePaths && mainFilePaths.length > 0)
             {
-                for (let filePath of mainFilePaths)
+                for (const filePath of mainFilePaths)
                 {
-                    let mainPath: path.ParsedPath = path.parse(filePath);
-                    let mainRootFileInfo = Configuration.getRootFileInfo(mainPath);
-                    let mainDefaults = extend({}, defaults, { rootFileInfo: mainRootFileInfo });
-                    let compilePromise = compile(filePath, mainDefaults);
+                    const mainPath: path.ParsedPath = path.parse(filePath);
+                    const mainRootFileInfo = Configuration.getRootFileInfo(mainPath);
+                    const mainDefaults = extend({}, defaults, { rootFileInfo: mainRootFileInfo });
+                    const compilePromise = compile(filePath, mainDefaults);
 
                     if (lastPromise)
                     {
@@ -52,8 +52,8 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
             return null;
         }
 
+        const out: string | boolean = options.out;
         let cssRelativeFilename: string;
-        let out: string | boolean = options.out;
         let baseFilename: string = path.parse(lessFile).name;
 
         if (typeof out === "string")
@@ -79,7 +79,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
             cssRelativeFilename = baseFilename + ".css";
         }
 
-        let cssFile = path.resolve(lessPath, cssRelativeFilename);
+        const cssFile = path.resolve(lessPath, cssRelativeFilename);
         delete options.out;
 
         // sourceMap
@@ -87,17 +87,17 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
         if (options.sourceMap)
         {
             // currently just has support for writing .map file to same directory
-            let lessPath: string = path.parse(lessFile).dir;
-            let cssPath: string = path.parse(cssFile).dir;
-            let lessRelativeToCss: string = path.relative(cssPath, lessPath);
+            const lessPath: string = path.parse(lessFile).dir;
+            const cssPath: string = path.parse(cssFile).dir;
+            const lessRelativeToCss: string = path.relative(cssPath, lessPath);
 
-            let sourceMapOptions = <Less.SourceMapOption>{
+            const sourceMapOptions = <Less.SourceMapOption>{
                 outputSourceFiles: false,
                 sourceMapBasepath: "lessPath",
                 sourceMapFileInline: options.sourceMapFileInline,
                 sourceMapRootpath: lessRelativeToCss,
             };
-          
+
             if (!sourceMapOptions.sourceMapFileInline)
             {
                 sourceMapFile = cssFile + '.map';
@@ -111,9 +111,9 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
         options.plugins = [];
         if (options.autoprefixer)
         {
-            let LessPluginAutoPrefix = require('less-plugin-autoprefix');
-            let browsers = options.autoprefixer.split(",");
-            let autoprefixPlugin = new LessPluginAutoPrefix({ browsers });
+            const LessPluginAutoPrefix = require('less-plugin-autoprefix');
+            const browsers: string[] = cleanBrowsersList(options.autoprefixer);
+            const autoprefixPlugin = new LessPluginAutoPrefix({ browsers });
 
             options.plugins.push(autoprefixPlugin);
         }
@@ -130,6 +130,21 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
             });
         });
     });
+}
+
+function cleanBrowsersList(autoprefixOption: string | string[]): string[]
+{
+    let browsers: string[];
+    if (Array.isArray(autoprefixOption))
+    {
+        browsers = autoprefixOption;
+    }
+    else 
+    {
+        browsers = ("" + autoprefixOption).split(/,|;/);
+    }
+
+    return browsers.map(browser => browser.trim());
 }
 
 function intepolatePath(this: void, path: string): string
@@ -153,8 +168,8 @@ function resolveMainFilePaths(this: void, main: string | string[], lessPath: str
         mainFiles = [];
     }
 
-    let interpolatedMainFilePaths: string[] = mainFiles.map(mainFile => intepolatePath(mainFile));
-    let resolvedMainFilePaths: string[] = interpolatedMainFilePaths.map(mainFile => path.resolve(lessPath, mainFile));
+    const interpolatedMainFilePaths: string[] = mainFiles.map(mainFile => intepolatePath(mainFile));
+    const resolvedMainFilePaths: string[] = interpolatedMainFilePaths.map(mainFile => path.resolve(lessPath, mainFile));
     if (resolvedMainFilePaths.indexOf(currentLessFile) >= 0)
     {
         return []; // avoid infinite loops
