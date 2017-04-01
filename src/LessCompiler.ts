@@ -45,7 +45,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
             }
         }
 
-        // out 
+        // out
         if (options.out === null || options.out === false)
         {
             // is null or false: do not compile
@@ -97,7 +97,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
                 sourceMapFileInline: options.sourceMapFileInline,
                 sourceMapRootpath: lessRelativeToCss,
             };
-
+          
             if (!sourceMapOptions.sourceMapFileInline)
             {
                 sourceMapFile = cssFile + '.map';
@@ -105,15 +105,18 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
             }
 
             options.sourceMap = sourceMapOptions;
-
-            // options.sourceMap.sourceMapURL = options.sourceMapURL;
-            // options.sourceMap.sourceMapBasepath = options.sourceMapBasepath || lessPath;
-            // options.sourceMap.sourceMapRootpath = options.sourceMapRootpath;
-            // options.sourceMap.outputSourceFiles = options.outputSourceFiles;
         }
 
         // plugins
         options.plugins = [];
+        if (options.autoprefixer)
+        {
+            let LessPluginAutoPrefix = require('less-plugin-autoprefix');
+            let browsers = options.autoprefixer.split(",");
+            let autoprefixPlugin = new LessPluginAutoPrefix({ browsers });
+
+            options.plugins.push(autoprefixPlugin);
+        }
 
         // set up the parser
         return less.render(content, options).then(output =>
@@ -181,7 +184,7 @@ function readFilePromise(this: void, filename: string): Promise<Buffer>
 {
     return new Promise((resolve, reject) =>
     {
-        fs.readFile(filename, (err: any, buffer: Buffer) => 
+        fs.readFile(filename, (err: any, buffer: Buffer) =>
         {
             if (err)
             {

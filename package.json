@@ -101,7 +101,8 @@
     "mkdirp": "^0.5.0",
     "promise": "^7.1.1",
     "request": "^2.72.0",
-    "source-map": "^0.5.3"
+    "source-map": "^0.5.3",
+    "less-plugin-autoprefix": "^1.5.1"
   },
   "devDependencies": {
     "typescript": "2.1.4",
