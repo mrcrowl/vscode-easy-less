@@ -1,5 +1,5 @@
 
-**v1.3.5-1.3.8** (<small>March 2017</small>)
+**v1.3.5-1.3.9** (<small>March 2017</small>)
 =============================================
 
 ## What's New
@@ -9,6 +9,7 @@
    - See README for more details [v1.3.7]
 
 ## Bug Fixes
+   - The `sources` output in a .css.map file (or in an inline source-map) is now relative to the .less file it references (i.e. when `out` has been used to redirect the .css output and `sourceMap` is enabled) [v1.3.9]
    - When the `sourceMap` option is `true`, the appropriate sourceMappingURL comment is now output
      at the bottom of the .css file [v1.3.8]
 

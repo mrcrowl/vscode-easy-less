@@ -87,11 +87,15 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
         if (options.sourceMap)
         {
             // currently just has support for writing .map file to same directory
+            let lessPath: string = path.parse(lessFile).dir;
+            let cssPath: string = path.parse(cssFile).dir;
+            let lessRelativeToCss: string = path.relative(cssPath, lessPath);
+
             let sourceMapOptions = <Less.SourceMapOption>{
                 outputSourceFiles: false,
-                sourceMapBasepath: lessPath,
+                sourceMapBasepath: "lessPath",
                 sourceMapFileInline: options.sourceMapFileInline,
-                sourceMapRootpath: null,
+                sourceMapRootpath: lessRelativeToCss,
             };
 
             if (!sourceMapOptions.sourceMapFileInline)

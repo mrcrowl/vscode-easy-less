@@ -276,6 +276,4 @@ Settings are read and applied in the following order:
 # Acknowledgements
 
  * Configuration concepts borrowed from [Jonathan Diehl's](#https://github.com/jdiehl) [brackets-less-autocompile](https://github.com/jdiehl/brackets-less-autocompile).
- * [thecosss](https://github.com/thecosss)
- * [pnkr](https://github.com/pnkr)
- * [elvis-macak](https://github.com/elvis-macak)
+ * [thecosss](https://github.com/thecosss), [pnkr](https://github.com/pnkr), [elvis-macak](https://github.com/elvis-macak), [ep-mark](https://github.com/ep-mark), [icefrog](https://github.com/NateLing), Alejandro L and Kenneth Davila
