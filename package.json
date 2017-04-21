@@ -22,15 +22,15 @@
     "contributes": {
         "commands": [{
             "command": "easyWxless.compile",
-            "title": "Compile LESS to CSS"
+            "title": "Compile LESS to WXSS"
         }],
         "configuration": {
             "type": "object",
-            "title": "Easy LESS configuration",
+            "title": "Easy WXLESS configuration",
             "properties": {
                 "less.compile": {
                     "type": "object",
-                    "description": "Configuration options for Easy LESS extension.",
+                    "description": "Configuration options for Easy WXLESS extension.",
                     "properties": {
                         "compress": {
                             "type": "boolean",

@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import CompileLessCommand = require("./CompileLessCommand");
 
 const LESS_EXT = ".less";
-const COMPILE_COMMAND = "easyLess.compile";
+const COMPILE_COMMAND = "easyWxless.compile";
 
 let lessDiagnosticCollection;
 
