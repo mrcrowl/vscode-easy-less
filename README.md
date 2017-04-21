@@ -1,14 +1,16 @@
 
 # Overview
 
-Easily work with LESS files in Visual Studio Code.
+Easily work with LESS files in Visual Studio Code for [Wechat Mini App](https://mp.weixin.qq.com/debug/wxadoc/introduction/index.html).
 
  "Compile-on-save" for [LESS stylesheets](http://lesscss.org/) without using a build task.  
 
+ Forked from [easy-less](https://github.com/mrcrowl/vscode-easy-less)
+
 # Features
 
- * Generates a `.css` file each time you save a `.less` file.  
-   e.g. `styles.less` --> `styles.css`
+ * Generates a `.wxss` file each time you save a `.less` file.  
+   e.g. `styles.less` --> `styles.wxss`
  
  * Compile errors integrate with the standard _Errors and Warnings_ list.
  
@@ -26,8 +28,8 @@ Easily work with LESS files in Visual Studio Code.
 # Default Settings
 
  * Compile on save occurs for every `.less` file in the project.
- * The `.css` file is output to the same directory as the source `.less` file.
- * Source maps (`.css.map` files) are _not_ output.
+ * The `.wxss` file is output to the same directory as the source `.less` file.
+ * Source maps (`.wxss.map` files) are _not_ output.
  * Compression is disabled.
  * Auto-prefixer is disabled.
  
@@ -35,7 +37,7 @@ Easily work with LESS files in Visual Studio Code.
 
  1. Create a `.less` file.
  2. Hit Ctrl/Cmd+S to save your file.
- 3. A `.css` file is automatically generated.
+ 3. A `.wxss` file is automatically generated.
  4. You should see a temporary "Less compiled in _**X**_ ms" message in the status bar.
 
 N.B. Also available from the command palette as "Compile LESS to CSS".
@@ -54,8 +56,8 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
     {    
         "less.compile": {
             "compress":  true,  // true => remove surplus whitespace
-            "sourceMap": true,  // true => generate source maps (.css.map files)
-            "out":       false, // false => DON'T output .css files (overridable per-file, see below)
+            "sourceMap": true,  // true => generate source maps (.wxss.map files)
+            "out":       false, // false => DON'T output .wxss files (overridable per-file, see below)
         }
     }
     ```   
@@ -67,7 +69,7 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
  * Example:
  
     ```less
-    // out: ../dist/app.css, compress: true, sourceMap: false
+    // out: ../dist/app.wxss, compress: true, sourceMap: false
     
     body, html {
         ...
@@ -85,18 +87,18 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
 `out: { boolean | filepath: string | folderpath: string }`
  * Redirects the css output to a different file.  
  * This setting can be used to override a project-wide `"out": false` setting, where you only want certain `.less` files to be generated.    
- * If filepath is used, but no file extension is specified, it will append `.css`
- * If folderpath is used, the less filename will be used, but with the `.css` extension
+ * If filepath is used, but no file extension is specified, it will append `.wxss`
+ * If folderpath is used, the less filename will be used, but with the `.wxss` extension
  * Filepath is relative to the current file.
 
 `sourceMap: { boolean }`
  * Enables generation of source map files.
- * When enabled, a `.css.map` file will be output in the same direction as the `.css` file (except when `sourceMapFileInline` is set, see below).
+ * When enabled, a `.wxss.map` file will be output in the same direction as the `.wxss` file (except when `sourceMapFileInline` is set, see below).
  * The `out` setting is respected.
  
 `sourceMapFileInline: { boolean }`
  * Inline the source map within the css
- * When enabled, the `.css` file outputted will contain an inline source-map
+ * When enabled, the `.wxss` file outputted will contain an inline source-map
 
 `compress: { boolean }` 
  * Compresses the css output by removing surplus white-space.
@@ -125,7 +127,7 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
    }
    ```
 
-   /main.css: (output)
+   /main.wxss: (output)
    ```less
    .feature {
        background-image: url('css/feature/background.png')
@@ -147,7 +149,7 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
     ```
  * See [browserslist](https://github.com/ai/browserslist#queries) documentation for further examples of browser queries.
  * **NOTE**: If used with the per-file configuration, the browsers listed _must_ be unquoted and semi-colon separated (because comma is already the directive separator): e.g.<br/>
-   `// autoprefixer: > 5%; last 2 Chrome versions; not ie 6-9, sourceMap: true, out: ../css/style.css`
+   `// autoprefixer: > 5%; last 2 Chrome versions; not ie 6-9, sourceMap: true, out: ../css/style.wxss`
 
 `ieCompat: { boolean }`
  * IE8 compatibility mode (defaults to `true`)
@@ -169,7 +171,7 @@ Settings are read and applied in the following order:
     > Add the following line to the head of your less file:
     >
     > ```javascript
-    > // out: new-file.css
+    > // out: new-file.wxss
     > ```
   
  2. How do I redirect all css output to a specific folder?  
@@ -221,7 +223,7 @@ Settings are read and applied in the following order:
     > }
     > ```
     >
-    > `style.less`: (will be compiled to `style.css`)
+    > `style.less`: (will be compiled to `style.wxss`)
     >
     > ```less
     > // out: true
@@ -280,7 +282,7 @@ Settings are read and applied in the following order:
     > }
     > ```
 
- 8. How do I generate sourcemap (`*.css.map`) files?
+ 8. How do I generate sourcemap (`*.wxss.map`) files?
 
     > `.vscode/settings.json`: 
     >
