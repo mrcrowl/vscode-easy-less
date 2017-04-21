@@ -3,7 +3,7 @@
     "displayName": "Easy WXLESS",
     "description": "Auto-compile LESS to WXSS on save",
     "version": "1.4.0",
-    "publisher": "mrcrowl",
+    "publisher": "yunfeizuo",
     "engines": {
         "vscode": "^1.5.0"
     },
@@ -16,7 +16,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/yunfeizuo/vscode-easy-less.git"
+        "url": "https://github.com/yunfeizuo/vscode-easy-wxless.git"
     },
     "main": "./out/src/easyWxless",
     "contributes": {
