@@ -51,8 +51,9 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
             // is null or false: do not compile
             return null;
         }
-
+        
         const out: string | boolean = options.out;
+        const outext: string = options.outext || '.wxss';
         let cssRelativeFilename: string;
         let baseFilename: string = path.parse(lessFile).name;
 
@@ -66,17 +67,17 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
             let lastCharacter = cssRelativeFilename.slice(-1);
             if (lastCharacter === '/' || lastCharacter === '\\')
             {
-                cssRelativeFilename += baseFilename + ".css";
+                cssRelativeFilename += baseFilename + outext;
             }
             else if (path.extname(cssRelativeFilename) === '')
             {
-                cssRelativeFilename += '.css';
+                cssRelativeFilename += outext;
             }
         }
         else
         {
             // out is not set: output to the same basename as the less file
-            cssRelativeFilename = baseFilename + ".css";
+            cssRelativeFilename = baseFilename + outext;
         }
 
         const cssFile = path.resolve(lessPath, cssRelativeFilename);

@@ -5,6 +5,7 @@ import * as extend from 'extend'
 const SUPPORTED_PER_FILE_OPTS = {
     "main": true,
     "out": true,
+    "outext": '.wxss',
     "sourceMap": true,
     "sourceMapFileInline": true,
     "compress": true,
