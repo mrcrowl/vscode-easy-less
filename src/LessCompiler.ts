@@ -5,7 +5,7 @@ import * as extend from 'extend'
 import * as fs from 'fs'
 import * as vscode from 'vscode';
 import { EasyLessOptions } from "./Configuration";
- 
+
 import Configuration = require("./Configuration");
 import FileOptionsParser = require("./FileOptionsParser");
 
@@ -225,17 +225,18 @@ function chooseExtension(this: void, options: EasyLessOptions): string
         {
             // special case for no extension (no idea if anyone would really want this?)
             return "";
-        }    
+        }
 
-        const extension = ensureDotPrefixed(options.outExt) || DEFAULT_EXT;
-    }    
+        return ensureDotPrefixed(options.outExt) || DEFAULT_EXT;
+    }
 
     return DEFAULT_EXT;
 }
 
 function ensureDotPrefixed(this: void, extension: string): string
 {
-    if (extension.startsWith(".")) {
+    if (extension.startsWith("."))
+    {
         return extension;
     }
 
