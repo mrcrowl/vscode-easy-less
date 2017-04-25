@@ -4,9 +4,12 @@ import * as path from 'path'
 import * as extend from 'extend'
 import * as fs from 'fs'
 import * as vscode from 'vscode';
-
+import { EasyLessOptions } from "./Configuration";
+ 
 import Configuration = require("./Configuration");
 import FileOptionsParser = require("./FileOptionsParser");
+
+const DEFAULT_EXT = ".css";
 
 // compile the given less file
 export function compile(lessFile: string, defaults: Configuration.EasyLessOptions): Promise<void>
@@ -21,7 +24,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
         if (options.main)
         {
             const mainFilePaths: string[] = resolveMainFilePaths(options.main, lessPath, lessFile);
-            let lastPromise: Promise<void> = null;
+            let lastPromise: Promise<void> | null = null;
             let promiseChainer = (lastPromise: Promise<void>, nextPromise: Promise<void>) => lastPromise.then(() => nextPromise);
             if (mainFilePaths && mainFilePaths.length > 0)
             {
@@ -52,11 +55,12 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
             return null;
         }
 
-        const out: string | boolean = options.out;
+        const out: string | boolean | undefined = options.out;
+        const extension: string = chooseExtension(options);
         let cssRelativeFilename: string;
-        let baseFilename: string = path.parse(lessFile).name;
+        const baseFilename: string = path.parse(lessFile).name;
 
-        if (typeof out === "string")
+        if (typeof out === "string") 
         {
             // out is set: output to the given file name
             // check whether is a folder first
@@ -66,17 +70,17 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
             let lastCharacter = cssRelativeFilename.slice(-1);
             if (lastCharacter === '/' || lastCharacter === '\\')
             {
-                cssRelativeFilename += baseFilename + ".css";
+                cssRelativeFilename += baseFilename + extension;
             }
             else if (path.extname(cssRelativeFilename) === '')
             {
-                cssRelativeFilename += '.css';
+                cssRelativeFilename += extension;
             }
         }
         else
         {
             // out is not set: output to the same basename as the less file
-            cssRelativeFilename = baseFilename + ".css";
+            cssRelativeFilename = baseFilename + extension;
         }
 
         const cssFile = path.resolve(lessPath, cssRelativeFilename);
@@ -101,7 +105,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
             if (!sourceMapOptions.sourceMapFileInline)
             {
                 sourceMapFile = cssFile + '.map';
-                sourceMapOptions.sourceMapURL = "./" + baseFilename + ".css.map";
+                sourceMapOptions.sourceMapURL = "./" + baseFilename + extension + ".map";
             }
 
             options.sourceMap = sourceMapOptions;
@@ -195,13 +199,13 @@ function writeFileContents(this: void, filepath: string, content: any): Promise<
     });
 }
 
-function readFilePromise(this: void, filename: string): Promise<Buffer>
+function readFilePromise(this: void, filename: string): Promise<Buffer> 
 {
     return new Promise((resolve, reject) =>
     {
         fs.readFile(filename, (err: any, buffer: Buffer) =>
         {
-            if (err)
+            if (err) 
             {
                 reject(err)
             }
@@ -211,4 +215,29 @@ function readFilePromise(this: void, filename: string): Promise<Buffer>
             }
         });
     });
+}
+
+function chooseExtension(this: void, options: EasyLessOptions): string
+{
+    if (options && options.outExt)
+    {
+        if (options.outExt === "")
+        {
+            // special case for no extension (no idea if anyone would really want this?)
+            return "";
+        }    
+
+        const extension = ensureDotPrefixed(options.outExt) || DEFAULT_EXT;
+    }    
+
+    return DEFAULT_EXT;
+}
+
+function ensureDotPrefixed(this: void, extension: string): string
+{
+    if (extension.startsWith(".")) {
+        return extension;
+    }
+
+    return extension ? `.${extension}` : "";
 }

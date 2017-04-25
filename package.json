@@ -2,7 +2,7 @@
   "name": "easy-less",
   "displayName": "Easy LESS",
   "description": "Auto-compile LESS to CSS on save",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "publisher": "mrcrowl",
   "engines": {
     "vscode": "^1.5.0"
@@ -13,7 +13,7 @@
   "activationEvents": [
     "onLanguage:less",
     "onCommand:easyLess.compile"
-  ], 
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/mrcrowl/vscode-easy-less.git"
@@ -62,6 +62,11 @@
               ],
               "description": "Default 'out' setting. Set to false to default to no output.",
               "default": null
+            },
+            "outExt": {
+              "type": "string",
+              "description": "The file extension to use for generated .css files",
+              "default": ".css"
             },
             "main": {
               "type": [

@@ -1,13 +1,11 @@
-import * as vscode from 'vscode';
 import StatusBarMessageTypes = require("./StatusBarMessageTypes");
+import * as vscode from 'vscode';
 
 const ERROR_COLOR_CSS = "rgba(255,125,0,1)";
 const ERROR_DURATION_MS = 10000;
 const SUCCESS_DURATION_MS = 1500;
 
-let errorMessage: vscode.StatusBarItem;
-
-
+let errorMessage: vscode.StatusBarItem | null;
 
 export function hideError()
 {

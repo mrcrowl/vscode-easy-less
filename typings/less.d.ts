@@ -22,10 +22,10 @@ declare module Less {
     interface RootFileInfo {
         filename: string;
         relativeUrls: boolean;
-        rootpath: string;
+        rootpath: string | null;
         currentDirectory: string;
-        entryPath: string;
-        rootFilename: string;
+        entryPath: string | null;
+        rootFilename: string | null;
     }
 
     class PluginManager {

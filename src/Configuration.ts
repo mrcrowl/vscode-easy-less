@@ -33,6 +33,7 @@ export function getRootFileInfo(parsedPath: path.ParsedPath): Less.RootFileInfo 
 export interface EasyLessOptions extends Less.Options {
     main?: string | string[];
     out?: string | boolean;
+    outExt?: string;
     sourceMap?: any;
     relativeUrls?: boolean;
     sourceMapFileInline?: boolean;

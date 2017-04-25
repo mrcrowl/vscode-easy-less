@@ -1,5 +1,12 @@
 
-**v1.3.5-1.3.9** (<small>March 2017</small>)
+**v1.4.1** (<small>April 2017</small>)
+=============================================
+
+## What's New
+ - Added settings:
+   - **`outExt`**: allows an alternative output file extension to be used (e.g. `.wxss` instead of `.css`).  [v1.4.1]
+
+**v1.3.5-1.4.0** (<small>March 2017</small>)
 =============================================
 
 ## What's New

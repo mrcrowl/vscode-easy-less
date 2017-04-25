@@ -5,6 +5,7 @@ import * as extend from 'extend'
 const SUPPORTED_PER_FILE_OPTS = {
     "main": true,
     "out": true,
+    "outExt": true,
     "sourceMap": true,
     "sourceMapFileInline": true,
     "compress": true,
@@ -20,7 +21,7 @@ const ARRAY_OPTS = {
 export function parse(line: string, defaults: Configuration.EasyLessOptions): Configuration.EasyLessOptions
 {
     // does line start with a comment?: //
-    let commentMatch: RegExpExecArray = /^\s*\/\/\s*(.+)/.exec(line);
+    let commentMatch: RegExpExecArray | null = /^\s*\/\/\s*(.+)/.exec(line);
     if (!commentMatch)
     {
         return defaults;
@@ -63,6 +64,6 @@ export function parse(line: string, defaults: Configuration.EasyLessOptions): Co
             seenKeys[key] = true;
         }
     }
-    
+
     return options;
 }
