@@ -302,4 +302,4 @@ Settings are read and applied in the following order:
 
  * Configuration concepts borrowed from [Jonathan Diehl's](#https://github.com/jdiehl) [brackets-less-autocompile](https://github.com/jdiehl/brackets-less-autocompile).
  * [thecosss](https://github.com/thecosss), [pnkr](https://github.com/pnkr), [elvis-macak](https://github.com/elvis-macak), [ep-mark](https://github.com/ep-mark), 
-   [icefrog](https://github.com/NateLing), [gprasanth](https://github.com/gprasanth), [yunfeizuo](https://github.com/yunfeizuo), Alejandro L and Kenneth Davila 
+   [icefrog](https://github.com/NateLing), [gprasanth](https://github.com/gprasanth), [yunfeizuo](https://github.com/yunfeizuo), [Tobyee](https://github.com/Tobyee), Alejandro L and Kenneth Davila 
