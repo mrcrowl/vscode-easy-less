@@ -97,7 +97,7 @@ export function compile(lessFile: string, defaults: Configuration.EasyLessOption
 
             const sourceMapOptions = <Less.SourceMapOption>{
                 outputSourceFiles: false,
-                sourceMapBasepath: "lessPath",
+                sourceMapBasepath: lessPath,
                 sourceMapFileInline: options.sourceMapFileInline,
                 sourceMapRootpath: lessRelativeToCss,
             };
