@@ -6,22 +6,22 @@ import CompileLessCommand = require("./CompileLessCommand");
 const LESS_EXT = ".less";
 const COMPILE_COMMAND = "easyLess.compile";
 
-let lessDiagnosticCollection;
+let lessDiagnosticCollection: vscode.DiagnosticCollection;
 
 export function activate(context: vscode.ExtensionContext)
 {
     lessDiagnosticCollection = vscode.languages.createDiagnosticCollection();
     
     // compile less command
-    let compileLessSub = vscode.commands.registerCommand(COMPILE_COMMAND, () =>
+    const compileLessSub = vscode.commands.registerCommand(COMPILE_COMMAND, () =>
     {
-        let activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
+        const activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
         if (activeEditor)
         {
-            let document: vscode.TextDocument = activeEditor.document;
+            const document: vscode.TextDocument = activeEditor.document;
             if (document && document.fileName.endsWith(LESS_EXT))
             {
-                let organise = new CompileLessCommand(document, lessDiagnosticCollection);
+                const organise = new CompileLessCommand(document, lessDiagnosticCollection);
                 organise.execute();
             }
             else
@@ -36,7 +36,7 @@ export function activate(context: vscode.ExtensionContext)
     });
     
     // automatically compile less on save
-    let didSaveEvent = vscode.workspace.onDidSaveTextDocument((doc: vscode.TextDocument) =>
+    const didSaveEvent = vscode.workspace.onDidSaveTextDocument((doc: vscode.TextDocument) =>
     {
         if (doc.fileName.endsWith(LESS_EXT))
         {
@@ -45,7 +45,7 @@ export function activate(context: vscode.ExtensionContext)
     });
     
     // dismiss less errors on file close
-    let didCloseEvent = vscode.workspace.onDidCloseTextDocument((doc: vscode.TextDocument) =>
+    const didCloseEvent = vscode.workspace.onDidCloseTextDocument((doc: vscode.TextDocument) =>
     {
         if (doc.fileName.endsWith(LESS_EXT))
         {

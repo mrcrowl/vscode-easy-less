@@ -45,17 +45,17 @@ export async function compile(lessFile: string, defaults: Configuration.EasyLess
 
     const out: string | boolean | undefined = options.out;
     const extension: string = chooseExtension(options);
-    let cssRelativeFilename: string;
     const baseFilename: string = path.parse(lessFile).name;
 
+    let cssRelativeFilename: string;
     if (typeof out === "string") 
     {
         // out is set: output to the given file name
         // check whether is a folder first
-        let interpolatedOut = intepolatePath(out);
+        const interpolatedOut = intepolatePath(out);
 
         cssRelativeFilename = interpolatedOut;
-        let lastCharacter = cssRelativeFilename.slice(-1);
+        const lastCharacter = cssRelativeFilename.slice(-1);
         if (lastCharacter === '/' || lastCharacter === '\\')
         {
             cssRelativeFilename += baseFilename + extension;
@@ -121,15 +121,9 @@ export async function compile(lessFile: string, defaults: Configuration.EasyLess
 
 function cleanBrowsersList(autoprefixOption: string | string[]): string[]
 {
-    let browsers: string[];
-    if (Array.isArray(autoprefixOption))
-    {
-        browsers = autoprefixOption;
-    }
-    else 
-    {
-        browsers = ("" + autoprefixOption).split(/,|;/);
-    }
+    const browsers: string[] = Array.isArray(autoprefixOption) ?
+        autoprefixOption :
+        ("" + autoprefixOption).split(/,|;/);
 
     return browsers.map(browser => browser.trim());
 }

@@ -21,23 +21,23 @@ const ARRAY_OPTS = {
 export function parse(line: string, defaults: Configuration.EasyLessOptions): Configuration.EasyLessOptions
 {
     // does line start with a comment?: //
-    let commentMatch: RegExpExecArray | null = /^\s*\/\/\s*(.+)/.exec(line);
+    const commentMatch: RegExpExecArray | null = /^\s*\/\/\s*(.+)/.exec(line);
     if (!commentMatch)
     {
         return defaults;
     }
 
-    let options: Configuration.EasyLessOptions = extend({}, defaults);
-    let optionLine: string = commentMatch[1];
-    let seenKeys: Object = {};
-    for (let item of optionLine.split(',')) // string[]
+    const options: Configuration.EasyLessOptions = extend({}, defaults);
+    const optionLine: string = commentMatch[1];
+    const seenKeys: Object = {};
+    for (const item of optionLine.split(',')) // string[]
     {
-        let i: number = item.indexOf(':');
+        const i: number = item.indexOf(':');
         if (i < 0)
         {
             continue;
         }
-        let key: string = item.substr(0, i).trim();
+        const key: string = item.substr(0, i).trim();
         if (!SUPPORTED_PER_FILE_OPTS.hasOwnProperty(key))
         {
             continue;
