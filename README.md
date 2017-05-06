@@ -15,10 +15,10 @@ Easily work with LESS files in Visual Studio Code.
  * Has reasonable [default settings](#default-settings), but...
  
  * Configurable, as needed:
-    * Configurable at global, project and per-file level (see [Advanced Usage](#advanced-usage) below)
+    * Configurable at user, workspace and per-file level (see [Advanced Usage](#advanced-usage) below)
     * _Main_ file support
     * Alternative output file
-    * Output supression
+    * Output suppression
     * Compression
 
  * [autoprefixer](https://github.com/postcss/autoprefixer) plugin included.
@@ -80,7 +80,7 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
  * Compiles a different less file _instead_ of this one.
  * All other settings are ignored.
  * Filepath is relative to the current file.
- * Multiple main files can be specified (see [FAQ](#faq)). 
+ * Multiple main files can be specified (see [FAQ](#faq)).
  
 `out: { boolean | filepath: string | folderpath: string }`
  * Redirects the css output to a different file.  
@@ -109,7 +109,7 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
 `relativeUrls: { boolean }`
  * Specifies whether URLs in `@import`'ed should be rewritten relative to the importing file.
  * Has no effect on the `out` parameter.
- * Example of `true` option—given this folder structure:<br/>
+ * Example of `true` option&mdash;given this folder structure:<br/>
    `/main.less`<br/>
    `/css/feature/feature.less`<br/>
    `/css/feature/background.png`
@@ -179,7 +179,7 @@ Settings are read and applied in the following order:
   
  2. How do I redirect all css output to a specific folder?  
     
-    > Specify the out parameter in the `settings.json` file, as a relative or absoluate path, 
+    > Specify the out parameter in the `settings.json` file, as a relative or absolute path, 
     > with a trailing slash (`/` or `\\`).  
     >
     > Tip: You can use the environment variable
@@ -195,7 +195,7 @@ Settings are read and applied in the following order:
     > }
     > ```
     
- 3. How do I supress compiling this less file / compile a _different_ less file than the one being edited?  
+ 3. How do I suppress compiling this less file / compile a _different_ less file than the one being edited?  
     
     > Add a reference to the master.less file to the head of the imported less file:
     >
@@ -203,7 +203,7 @@ Settings are read and applied in the following order:
     > // main: master.less
     > ```
 
- 4. How do I supress the compilation of a single less file?
+ 4. How do I suppress the compilation of a single less file?
 
     > Set `out` to false (or null) in a comment at the top of the .less file:
     >
@@ -270,6 +270,9 @@ Settings are read and applied in the following order:
     >   ```less
     >   // main: main-one.less, main: main-two.less
     >   ```
+    >
+    > When there is more than one `main` setting, they are guaranteed to be 
+    > output in the order listed (from left to right). For the example shown above, the output from `main-one.less` will be saved to disk before `main-two.less` is processed (assuming they are both configured to output). This can be used to control dependency chains.
 
  7. Can I specify paths relative to the _workspace_, instead of relative to the _less_ file?
 
@@ -302,4 +305,4 @@ Settings are read and applied in the following order:
 
  * Configuration concepts borrowed from [Jonathan Diehl's](#https://github.com/jdiehl) [brackets-less-autocompile](https://github.com/jdiehl/brackets-less-autocompile).
  * [thecosss](https://github.com/thecosss), [pnkr](https://github.com/pnkr), [elvis-macak](https://github.com/elvis-macak), [ep-mark](https://github.com/ep-mark), 
-   [icefrog](https://github.com/NateLing), [gprasanth](https://github.com/gprasanth), [yunfeizuo](https://github.com/yunfeizuo), [Tobyee](https://github.com/Tobyee), Alejandro L and Kenneth Davila 
+   [icefrog](https://github.com/NateLing), [gprasanth](https://github.com/gprasanth), [yunfeizuo](https://github.com/yunfeizuo), [Tobyee](https://github.com/Tobyee), [sagive](https://github.com/sagive), [DifficultNick](https://github.com/DifficultNick), Alejandro L and Kenneth Davila 

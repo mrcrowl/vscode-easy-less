@@ -1,5 +1,5 @@
 
-**v1.4.1-1.4.2** (<small>April 2017</small>)
+**v1.4.1-1.4.3** (<small>April 2017</small>)
 =============================================
 
 ## What's New
@@ -7,7 +7,9 @@
    - **`outExt`**: allows an alternative output file extension to be used (e.g. `.wxss` instead of `.css`).  [v1.4.1]
 
 ## Bug Fixes
- - The paths output in .map files should now be output as relative paths&mdash;[#16](https://github.com/mrcrowl/vscode-easy-less/issues/16)
+ - When there is more than one `main` setting, these are now guaranteed to be output in order&mdash;[#20](https://github.com/mrcrowl/vscode-easy-less/issues/20) [v1.4.3]
+ - Fixed "This command only works for .less files" bug when saving .less file not in active editor&mdash;[#17](https://github.com/mrcrowl/vscode-easy-less/issues/17) [v1.4.3]
+ - The paths output in .map files should now be output as relative paths&mdash;[#16](https://github.com/mrcrowl/vscode-easy-less/issues/16) [v1.4.2]
 
 **v1.3.5-1.4.0** (<small>March 2017</small>)
 =============================================
