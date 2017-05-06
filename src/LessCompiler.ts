@@ -92,8 +92,25 @@ export async function compile(lessFile: string, defaults: Configuration.EasyLess
 
         if (!sourceMapOptions.sourceMapFileInline)
         {
-            sourceMapFile = cssFile + '.map';
-            sourceMapOptions.sourceMapURL = "./" + baseFilename + extension + ".map";
+            // currently just has support for writing .map file to same directory
+            const lessPath: string = path.parse(lessFile).dir;
+            const cssPath: string = path.parse(cssFile).dir;
+            const lessRelativeToCss: string = path.relative(cssPath, lessPath);
+
+            const sourceMapOptions = <Less.SourceMapOption>{
+                outputSourceFiles: false,
+                sourceMapBasepath: lessPath,
+                sourceMapFileInline: options.sourceMapFileInline,
+                sourceMapRootpath: lessRelativeToCss,
+            };
+
+            if (!sourceMapOptions.sourceMapFileInline)
+            {
+                sourceMapFile = cssFile + '.map';
+                sourceMapOptions.sourceMapURL = "./" + baseFilename + extension + ".map";
+            }
+
+            options.sourceMap = sourceMapOptions;
         }
 
         options.sourceMap = sourceMapOptions;

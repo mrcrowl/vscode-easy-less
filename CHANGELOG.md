@@ -1,10 +1,13 @@
 
-**v1.4.1** (<small>April 2017</small>)
+**v1.4.1-1.4.2** (<small>April 2017</small>)
 =============================================
 
 ## What's New
  - Added settings:
    - **`outExt`**: allows an alternative output file extension to be used (e.g. `.wxss` instead of `.css`).  [v1.4.1]
+
+## Bug Fixes
+ - The paths output in .map files should now be output as relative paths&mdash;[#16](https://github.com/mrcrowl/vscode-easy-less/issues/16)
 
 **v1.3.5-1.4.0** (<small>March 2017</small>)
 =============================================
