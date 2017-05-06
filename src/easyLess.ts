@@ -11,39 +11,45 @@ let lessDiagnosticCollection: vscode.DiagnosticCollection;
 export function activate(context: vscode.ExtensionContext)
 {
     lessDiagnosticCollection = vscode.languages.createDiagnosticCollection();
-    
+
     // compile less command
-    const compileLessSub = vscode.commands.registerCommand(COMPILE_COMMAND, () =>
+    const compileLessSub = vscode.commands.registerCommand(COMPILE_COMMAND, (document?: vscode.TextDocument) =>
     {
-        const activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
-        if (activeEditor)
+        // if no document argument given, use the active text editor
+        if (!document)
         {
-            const document: vscode.TextDocument = activeEditor.document;
-            if (document && document.fileName.endsWith(LESS_EXT))
+            const activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
+            if (activeEditor)
             {
-                const organise = new CompileLessCommand(document, lessDiagnosticCollection);
-                organise.execute();
+                document = activeEditor.document;
             }
             else
             {
-                vscode.window.showWarningMessage("This command only works for .less files.");
+                vscode.window.showInformationMessage("This command is only available when a .less editor is open.");
+                return;
             }
+        }
+
+        if (document.fileName.endsWith(LESS_EXT))
+        {
+            const organise = new CompileLessCommand(document, lessDiagnosticCollection);
+            organise.execute();
         }
         else
         {
-            vscode.window.showInformationMessage("This command is only available when a .less editor is open.");
+            vscode.window.showWarningMessage("This command only works for .less files.");
         }
     });
-    
+
     // automatically compile less on save
     const didSaveEvent = vscode.workspace.onDidSaveTextDocument((doc: vscode.TextDocument) =>
     {
         if (doc.fileName.endsWith(LESS_EXT))
         {
-            vscode.commands.executeCommand(COMPILE_COMMAND);
+            vscode.commands.executeCommand(COMPILE_COMMAND, doc);
         }
     });
-    
+
     // dismiss less errors on file close
     const didCloseEvent = vscode.workspace.onDidCloseTextDocument((doc: vscode.TextDocument) =>
     {
