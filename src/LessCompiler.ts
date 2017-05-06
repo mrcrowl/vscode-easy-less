@@ -12,128 +12,111 @@ import FileOptionsParser = require("./FileOptionsParser");
 const DEFAULT_EXT = ".css";
 
 // compile the given less file
-export function compile(lessFile: string, defaults: Configuration.EasyLessOptions): Promise<void>
+export async function compile(lessFile: string, defaults: Configuration.EasyLessOptions): Promise<void>
 {
-    return readFilePromise(lessFile).then(buffer =>
+    const buffer = await readFilePromise(lessFile);
+    const content: string = buffer.toString();
+    const options: Configuration.EasyLessOptions = FileOptionsParser.parse(content, defaults);
+    const lessPath: string = path.dirname(lessFile);
+
+    // main is set: compile the referenced file instead
+    if (options.main)
     {
-        const content: string = buffer.toString();
-        const options: Configuration.EasyLessOptions = FileOptionsParser.parse(content, defaults);
-        const lessPath: string = path.dirname(lessFile);
-
-        // main is set: compile the referenced file instead
-        if (options.main)
+        const mainFilePaths: string[] = resolveMainFilePaths(options.main, lessPath, lessFile);
+        if (mainFilePaths && mainFilePaths.length > 0)
         {
-            const mainFilePaths: string[] = resolveMainFilePaths(options.main, lessPath, lessFile);
-            let lastPromise: Promise<void> | null = null;
-            let promiseChainer = (lastPromise: Promise<void>, nextPromise: Promise<void>) => lastPromise.then(() => nextPromise);
-            if (mainFilePaths && mainFilePaths.length > 0)
+            for (const filePath of mainFilePaths)
             {
-                for (const filePath of mainFilePaths)
-                {
-                    const mainPath: path.ParsedPath = path.parse(filePath);
-                    const mainRootFileInfo = Configuration.getRootFileInfo(mainPath);
-                    const mainDefaults = extend({}, defaults, { rootFileInfo: mainRootFileInfo });
-                    const compilePromise = compile(filePath, mainDefaults);
-
-                    if (lastPromise)
-                    {
-                        lastPromise = promiseChainer(lastPromise, compilePromise);
-                    }
-                    else
-                    {
-                        lastPromise = compilePromise;
-                    }
-                }
-                return lastPromise;
+                const mainPath: path.ParsedPath = path.parse(filePath);
+                const mainRootFileInfo = Configuration.getRootFileInfo(mainPath);
+                const mainDefaults = extend({}, defaults, { rootFileInfo: mainRootFileInfo });
+                await compile(filePath, mainDefaults);
             }
+            return;
+        }
+    }
+
+    // out
+    if (options.out === null || options.out === false)
+    {
+        // is null or false: do not compile
+        return;
+    }
+
+    const out: string | boolean | undefined = options.out;
+    const extension: string = chooseExtension(options);
+    let cssRelativeFilename: string;
+    const baseFilename: string = path.parse(lessFile).name;
+
+    if (typeof out === "string") 
+    {
+        // out is set: output to the given file name
+        // check whether is a folder first
+        let interpolatedOut = intepolatePath(out);
+
+        cssRelativeFilename = interpolatedOut;
+        let lastCharacter = cssRelativeFilename.slice(-1);
+        if (lastCharacter === '/' || lastCharacter === '\\')
+        {
+            cssRelativeFilename += baseFilename + extension;
+        }
+        else if (path.extname(cssRelativeFilename) === '')
+        {
+            cssRelativeFilename += extension;
+        }
+    }
+    else
+    {
+        // out is not set: output to the same basename as the less file
+        cssRelativeFilename = baseFilename + extension;
+    }
+
+    const cssFile = path.resolve(lessPath, cssRelativeFilename);
+    delete options.out;
+
+    // sourceMap
+    let sourceMapFile: string | undefined;
+    if (options.sourceMap)
+    {
+        // currently just has support for writing .map file to same directory
+        const lessPath: string = path.parse(lessFile).dir;
+        const cssPath: string = path.parse(cssFile).dir;
+        const lessRelativeToCss: string = path.relative(cssPath, lessPath);
+
+        const sourceMapOptions = <Less.SourceMapOption>{
+            outputSourceFiles: false,
+            sourceMapBasepath: "lessPath",
+            sourceMapFileInline: options.sourceMapFileInline,
+            sourceMapRootpath: lessRelativeToCss,
+        };
+
+        if (!sourceMapOptions.sourceMapFileInline)
+        {
+            sourceMapFile = cssFile + '.map';
+            sourceMapOptions.sourceMapURL = "./" + baseFilename + extension + ".map";
         }
 
-        // out
-        if (options.out === null || options.out === false)
-        {
-            // is null or false: do not compile
-            return null;
-        }
+        options.sourceMap = sourceMapOptions;
+    }
 
-        const out: string | boolean | undefined = options.out;
-        const extension: string = chooseExtension(options);
-        let cssRelativeFilename: string;
-        const baseFilename: string = path.parse(lessFile).name;
+    // plugins
+    options.plugins = [];
+    if (options.autoprefixer)
+    {
+        const LessPluginAutoPrefix = require('less-plugin-autoprefix');
+        const browsers: string[] = cleanBrowsersList(options.autoprefixer);
+        const autoprefixPlugin = new LessPluginAutoPrefix({ browsers });
 
-        if (typeof out === "string") 
-        {
-            // out is set: output to the given file name
-            // check whether is a folder first
-            let interpolatedOut = intepolatePath(out);
+        options.plugins.push(autoprefixPlugin);
+    }
 
-            cssRelativeFilename = interpolatedOut;
-            let lastCharacter = cssRelativeFilename.slice(-1);
-            if (lastCharacter === '/' || lastCharacter === '\\')
-            {
-                cssRelativeFilename += baseFilename + extension;
-            }
-            else if (path.extname(cssRelativeFilename) === '')
-            {
-                cssRelativeFilename += extension;
-            }
-        }
-        else
-        {
-            // out is not set: output to the same basename as the less file
-            cssRelativeFilename = baseFilename + extension;
-        }
-
-        const cssFile = path.resolve(lessPath, cssRelativeFilename);
-        delete options.out;
-
-        // sourceMap
-        let sourceMapFile: string;
-        if (options.sourceMap)
-        {
-            // currently just has support for writing .map file to same directory
-            const lessPath: string = path.parse(lessFile).dir;
-            const cssPath: string = path.parse(cssFile).dir;
-            const lessRelativeToCss: string = path.relative(cssPath, lessPath);
-
-            const sourceMapOptions = <Less.SourceMapOption>{
-                outputSourceFiles: false,
-                sourceMapBasepath: "lessPath",
-                sourceMapFileInline: options.sourceMapFileInline,
-                sourceMapRootpath: lessRelativeToCss,
-            };
-
-            if (!sourceMapOptions.sourceMapFileInline)
-            {
-                sourceMapFile = cssFile + '.map';
-                sourceMapOptions.sourceMapURL = "./" + baseFilename + extension + ".map";
-            }
-
-            options.sourceMap = sourceMapOptions;
-        }
-
-        // plugins
-        options.plugins = [];
-        if (options.autoprefixer)
-        {
-            const LessPluginAutoPrefix = require('less-plugin-autoprefix');
-            const browsers: string[] = cleanBrowsersList(options.autoprefixer);
-            const autoprefixPlugin = new LessPluginAutoPrefix({ browsers });
-
-            options.plugins.push(autoprefixPlugin);
-        }
-
-        // set up the parser
-        return less.render(content, options).then(output =>
-        {
-            return writeFileContents(cssFile, output.css).then(() =>
-            {
-                if (output.map && sourceMapFile)
-                {
-                    return writeFileContents(sourceMapFile, output.map);
-                }
-            });
-        });
-    });
+    // set up the parser
+    const output = await less.render(content, options);
+    await writeFileContents(cssFile, output.css);
+    if (output.map && sourceMapFile)
+    {
+        await writeFileContents(sourceMapFile, output.map);
+    }
 }
 
 function cleanBrowsersList(autoprefixOption: string | string[]): string[]
