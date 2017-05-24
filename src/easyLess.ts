@@ -42,11 +42,11 @@ export function activate(context: vscode.ExtensionContext)
     });
 
     // automatically compile less on save
-    const didSaveEvent = vscode.workspace.onDidSaveTextDocument((doc: vscode.TextDocument) =>
+    const willSaveEvent = vscode.workspace.onWillSaveTextDocument(e =>
     {
-        if (doc.fileName.endsWith(LESS_EXT))
+        if (e.document.fileName.endsWith(LESS_EXT))
         {
-            vscode.commands.executeCommand(COMPILE_COMMAND, doc);
+            vscode.commands.executeCommand(COMPILE_COMMAND, e.document);
         }
     });
 
@@ -60,7 +60,7 @@ export function activate(context: vscode.ExtensionContext)
     })
 
     context.subscriptions.push(compileLessSub);
-    context.subscriptions.push(didSaveEvent);
+    context.subscriptions.push(willSaveEvent);
     context.subscriptions.push(didCloseEvent);
 }
 

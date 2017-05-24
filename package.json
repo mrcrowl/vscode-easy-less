@@ -5,7 +5,7 @@
   "version": "1.4.3",
   "publisher": "mrcrowl",
   "engines": {
-    "vscode": "^1.5.0"
+    "vscode": "^1.6.0"
   },
   "categories": [
     "Other"
@@ -108,6 +108,6 @@
   },
   "devDependencies": {
     "typescript": "2.1.4",
-    "vscode": "^1.0.0"
+    "vscode": "^1.1.0"
   }
 }
