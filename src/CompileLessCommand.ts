@@ -27,7 +27,7 @@ class CompileLessCommand
         const startTime: number = Date.now();
         try
         {
-            await LessCompiler.compile(this.document.fileName, globalOptions);
+            await LessCompiler.compile(this.document.fileName, this.document.getText(), globalOptions);
             const elapsedTime: number = (Date.now() - startTime);
             compilingMessage.dispose();
             this.lessDiagnosticCollection.set(this.document.uri, []);

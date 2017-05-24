@@ -12,10 +12,8 @@ import FileOptionsParser = require("./FileOptionsParser");
 const DEFAULT_EXT = ".css";
 
 // compile the given less file
-export async function compile(lessFile: string, defaults: Configuration.EasyLessOptions): Promise<void>
+export async function compile(lessFile: string, content: string, defaults: Configuration.EasyLessOptions): Promise<void>
 {
-    const buffer = await readFilePromise(lessFile);
-    const content: string = buffer.toString();
     const options: Configuration.EasyLessOptions = FileOptionsParser.parse(content, defaults);
     const lessPath: string = path.dirname(lessFile);
 
@@ -30,7 +28,8 @@ export async function compile(lessFile: string, defaults: Configuration.EasyLess
                 const mainPath: path.ParsedPath = path.parse(filePath);
                 const mainRootFileInfo = Configuration.getRootFileInfo(mainPath);
                 const mainDefaults = extend({}, defaults, { rootFileInfo: mainRootFileInfo });
-                await compile(filePath, mainDefaults);
+                const mainContent = await readFilePromise(lessFile, "utf-8");
+                await compile(filePath, mainContent, mainDefaults);
             }
             return;
         }
@@ -176,11 +175,11 @@ function writeFileContents(this: void, filepath: string, content: any): Promise<
     });
 }
 
-function readFilePromise(this: void, filename: string): Promise<Buffer> 
+function readFilePromise(this: void, filename: string, encoding: string): Promise<string> 
 {
     return new Promise((resolve, reject) =>
     {
-        fs.readFile(filename, (err: any, buffer: Buffer) =>
+        fs.readFile(filename, encoding, (err: any, data: string) =>
         {
             if (err) 
             {
@@ -188,7 +187,7 @@ function readFilePromise(this: void, filename: string): Promise<Buffer>
             }
             else
             {
-                resolve(buffer);
+                resolve(data);
             }
         });
     });
