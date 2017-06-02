@@ -8,6 +8,7 @@ import { EasyLessOptions } from "./Configuration";
 
 import Configuration = require("./Configuration");
 import FileOptionsParser = require("./FileOptionsParser");
+import { LessDocumentResolverPlugin } from "./LessDocumentResolverPlugin";
 
 const DEFAULT_EXT = ".css";
 
@@ -108,6 +109,8 @@ export async function compile(lessFile: string, content: string, defaults: Confi
 
         options.plugins.push(autoprefixPlugin);
     }
+
+    options.plugins.push(new LessDocumentResolverPlugin());
 
     // set up the parser
     const output = await less.render(content, options);
