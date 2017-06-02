@@ -28,7 +28,7 @@ export async function compile(lessFile: string, content: string, defaults: Confi
                 const mainPath: path.ParsedPath = path.parse(filePath);
                 const mainRootFileInfo = Configuration.getRootFileInfo(mainPath);
                 const mainDefaults = extend({}, defaults, { rootFileInfo: mainRootFileInfo });
-                const mainContent = await readFilePromise(lessFile, "utf-8");
+                const mainContent = await readFilePromise(filePath, "utf-8");
                 await compile(filePath, mainContent, mainDefaults);
             }
             return;
