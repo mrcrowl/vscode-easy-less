@@ -7,7 +7,7 @@
  - Invoking `Compile Less to CSS` from the command palette now saves the file before compiling.
 
 ## Bug Fixes
- - Fix for broken `sourceMap` option [#23](https://github.com/mrcrowl/vscode-easy-less/issues/23)
+ - Fix for broken `sourceMap` behaviours reported in: [#23](https://github.com/mrcrowl/vscode-easy-less/issues/23), [#26](https://github.com/mrcrowl/vscode-easy-less/issues/26)
 
 ## Notice
  - HT to [@CnSimonChan](https://github.com/CnSimonChan) for all of this month's work. 
