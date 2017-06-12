@@ -85,7 +85,7 @@ export async function compile(lessFile: string, content: string, defaults: Confi
 
         const sourceMapOptions = <Less.SourceMapOption>{
             outputSourceFiles: false,
-            sourceMapBasepath: "lessPath",
+            sourceMapBasepath: lessPath,
             sourceMapFileInline: options.sourceMapFileInline,
             sourceMapRootpath: lessRelativeToCss,
         };

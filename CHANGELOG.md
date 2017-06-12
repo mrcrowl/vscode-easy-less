@@ -1,4 +1,17 @@
 
+**v1.4.4** (<small>June 2017</small>)
+=============================================
+
+## What's New
+ - New hook used for detecting file saves.  This now allows you to compile when a file is not dirty, e.g. when only `@imports` have changed.
+ - Invoking `Compile Less to CSS` from the command palette now saves the file before compiling.
+
+## Bug Fixes
+ - Fix for broken `sourceMap` option [#23](https://github.com/mrcrowl/vscode-easy-less/issues/23)
+
+## Notice
+ - HT to [@CnSimonChan](https://github.com/CnSimonChan) for all of this month's work. 
+
 **v1.4.1-1.4.3** (<small>April 2017</small>)
 =============================================
 

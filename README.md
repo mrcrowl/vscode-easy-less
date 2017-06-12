@@ -304,5 +304,6 @@ Settings are read and applied in the following order:
 # Acknowledgements
 
  * Configuration concepts borrowed from [Jonathan Diehl's](#https://github.com/jdiehl) [brackets-less-autocompile](https://github.com/jdiehl/brackets-less-autocompile).
- * [thecosss](https://github.com/thecosss), [pnkr](https://github.com/pnkr), [elvis-macak](https://github.com/elvis-macak), [ep-mark](https://github.com/ep-mark), 
-   [icefrog](https://github.com/NateLing), [gprasanth](https://github.com/gprasanth), [yunfeizuo](https://github.com/yunfeizuo), [Tobyee](https://github.com/Tobyee), [sagive](https://github.com/sagive), [DifficultNick](https://github.com/DifficultNick), Alejandro L and Kenneth Davila 
+ * Contributors: [CnSimonChan](https://github.com/CnSimonChan), [gprasanth](https://github.com/gprasanth), [elvis-macak](https://github.com/elvis-macak)
+ * Feedback/ideas: [thecosss](https://github.com/thecosss), [pnkr](https://github.com/pnkr), [ep-mark](https://github.com/ep-mark), 
+   [icefrog](https://github.com/NateLing), , [yunfeizuo](https://github.com/yunfeizuo), [Tobyee](https://github.com/Tobyee), [sagive](https://github.com/sagive), [DifficultNick](https://github.com/DifficultNick), Alejandro L and Kenneth Davila 
