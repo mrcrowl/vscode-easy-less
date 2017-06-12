@@ -13,40 +13,35 @@ export function activate(context: vscode.ExtensionContext)
     lessDiagnosticCollection = vscode.languages.createDiagnosticCollection();
 
     // compile less command
-    const compileLessSub = vscode.commands.registerCommand(COMPILE_COMMAND, (document?: vscode.TextDocument) =>
+    const compileLessSub = vscode.commands.registerCommand(COMPILE_COMMAND, () =>
     {
-        // if no document argument given, use the active text editor
-        if (!document)
+        const activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
+        if (activeEditor)
         {
-            const activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
-            if (activeEditor)
+            const document = activeEditor.document;
+
+            if (document.fileName.endsWith(LESS_EXT))
             {
-                document = activeEditor.document;
+                document.save();
             }
             else
             {
-                vscode.window.showInformationMessage("This command is only available when a .less editor is open.");
-                return;
+                vscode.window.showWarningMessage("This command only works for .less files.");
             }
-        }
-
-        if (document.fileName.endsWith(LESS_EXT))
-        {
-            const organise = new CompileLessCommand(document, lessDiagnosticCollection);
-            organise.execute();
         }
         else
         {
-            vscode.window.showWarningMessage("This command only works for .less files.");
+            vscode.window.showInformationMessage("This command is only available when a .less editor is open.");
         }
     });
 
     // automatically compile less on save
-    const didSaveEvent = vscode.workspace.onDidSaveTextDocument((doc: vscode.TextDocument) =>
+    const willSaveEvent = vscode.workspace.onWillSaveTextDocument(e =>
     {
-        if (doc.fileName.endsWith(LESS_EXT))
+        if (e.document.fileName.endsWith(LESS_EXT))
         {
-            vscode.commands.executeCommand(COMPILE_COMMAND, doc);
+            const organise = new CompileLessCommand(e.document, lessDiagnosticCollection);
+            organise.execute();
         }
     });
 
@@ -60,7 +55,7 @@ export function activate(context: vscode.ExtensionContext)
     })
 
     context.subscriptions.push(compileLessSub);
-    context.subscriptions.push(didSaveEvent);
+    context.subscriptions.push(willSaveEvent);
     context.subscriptions.push(didCloseEvent);
 }
 

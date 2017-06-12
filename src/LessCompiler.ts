@@ -8,14 +8,13 @@ import { EasyLessOptions } from "./Configuration";
 
 import Configuration = require("./Configuration");
 import FileOptionsParser = require("./FileOptionsParser");
+import { LessDocumentResolverPlugin } from "./LessDocumentResolverPlugin";
 
 const DEFAULT_EXT = ".css";
 
 // compile the given less file
-export async function compile(lessFile: string, defaults: Configuration.EasyLessOptions): Promise<void>
+export async function compile(lessFile: string, content: string, defaults: Configuration.EasyLessOptions): Promise<void>
 {
-    const buffer = await readFilePromise(lessFile);
-    const content: string = buffer.toString();
     const options: Configuration.EasyLessOptions = FileOptionsParser.parse(content, defaults);
     const lessPath: string = path.dirname(lessFile);
 
@@ -30,7 +29,8 @@ export async function compile(lessFile: string, defaults: Configuration.EasyLess
                 const mainPath: path.ParsedPath = path.parse(filePath);
                 const mainRootFileInfo = Configuration.getRootFileInfo(mainPath);
                 const mainDefaults = extend({}, defaults, { rootFileInfo: mainRootFileInfo });
-                await compile(filePath, mainDefaults);
+                const mainContent = await readFilePromise(filePath, "utf-8");
+                await compile(filePath, mainContent, mainDefaults);
             }
             return;
         }
@@ -92,25 +92,8 @@ export async function compile(lessFile: string, defaults: Configuration.EasyLess
 
         if (!sourceMapOptions.sourceMapFileInline)
         {
-            // currently just has support for writing .map file to same directory
-            const lessPath: string = path.parse(lessFile).dir;
-            const cssPath: string = path.parse(cssFile).dir;
-            const lessRelativeToCss: string = path.relative(cssPath, lessPath);
-
-            const sourceMapOptions = <Less.SourceMapOption>{
-                outputSourceFiles: false,
-                sourceMapBasepath: lessPath,
-                sourceMapFileInline: options.sourceMapFileInline,
-                sourceMapRootpath: lessRelativeToCss,
-            };
-
-            if (!sourceMapOptions.sourceMapFileInline)
-            {
-                sourceMapFile = cssFile + '.map';
-                sourceMapOptions.sourceMapURL = "./" + baseFilename + extension + ".map";
-            }
-
-            options.sourceMap = sourceMapOptions;
+            sourceMapFile = cssFile + '.map';
+            sourceMapOptions.sourceMapURL = "./" + baseFilename + extension + ".map";
         }
 
         options.sourceMap = sourceMapOptions;
@@ -126,6 +109,8 @@ export async function compile(lessFile: string, defaults: Configuration.EasyLess
 
         options.plugins.push(autoprefixPlugin);
     }
+
+    options.plugins.push(new LessDocumentResolverPlugin());
 
     // set up the parser
     const output = await less.render(content, options);
@@ -193,11 +178,11 @@ function writeFileContents(this: void, filepath: string, content: any): Promise<
     });
 }
 
-function readFilePromise(this: void, filename: string): Promise<Buffer> 
+function readFilePromise(this: void, filename: string, encoding: string): Promise<string> 
 {
     return new Promise((resolve, reject) =>
     {
-        fs.readFile(filename, (err: any, buffer: Buffer) =>
+        fs.readFile(filename, encoding, (err: any, data: string) =>
         {
             if (err) 
             {
@@ -205,7 +190,7 @@ function readFilePromise(this: void, filename: string): Promise<Buffer>
             }
             else
             {
-                resolve(buffer);
+                resolve(data);
             }
         });
     });
