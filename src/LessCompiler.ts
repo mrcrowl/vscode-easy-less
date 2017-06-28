@@ -170,7 +170,6 @@ function writeFileContents(this: void, filepath: string, content: any): Promise<
         {
             if (err)
             {
-                console.log("mkpath err", filepath, err)
                 return reject(err);
             }
 
@@ -178,12 +177,10 @@ function writeFileContents(this: void, filepath: string, content: any): Promise<
             {
                 if (err)
                 {
-                    console.log("err", filepath, err)
                     reject(err)
                 }
                 else
                 {
-                    console.log("res: writeFileContents", filepath)
                     resolve()
                 }
             });
@@ -193,7 +190,6 @@ function writeFileContents(this: void, filepath: string, content: any): Promise<
 
 function readFilePromise(this: void, filename: string, encoding: string): Promise<string> 
 {
-    console.log("reading: ", filename)
     return new Promise((resolve, reject) =>
     {
         fs.readFile(filename, encoding, (err: any, data: string) =>
