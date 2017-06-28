@@ -82,7 +82,11 @@
               "default": false
             },
             "autoprefixer": {
-              "type": ["string", "array", "null"],
+              "type": [
+                "string",
+                "array",
+                "null"
+              ],
               "description": "The 'browsers' argument for autoprefixer plugin (see https://github.com/ai/browserslist#queries)",
               "default": "> 5%, last 2 Chrome versions, not ie 6-9"
             }
@@ -107,7 +111,7 @@
     "less-plugin-autoprefix": "^1.5.1"
   },
   "devDependencies": {
-    "typescript": "2.1.4",
+    "typescript": "^2.4.1",
     "vscode": "^1.1.0"
   }
 }
