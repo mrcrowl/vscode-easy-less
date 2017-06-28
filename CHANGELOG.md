@@ -1,5 +1,5 @@
 
-**v1.4.4** (<small>June 2017</small>)
+**v1.4.4-1.4.5** (<small>June 2017</small>)
 =============================================
 
 ## What's New
@@ -8,6 +8,7 @@
 
 ## Bug Fixes
  - Fix for broken `sourceMap` behaviours reported in: [#23](https://github.com/mrcrowl/vscode-easy-less/issues/23), [#26](https://github.com/mrcrowl/vscode-easy-less/issues/26)
+ - Fix for regression of [#20](https://github.com/mrcrowl/vscode-easy-less/issues/20)
 
 ## Notice
  - HT to [@CnSimonChan](https://github.com/CnSimonChan) for all of this month's work. 
