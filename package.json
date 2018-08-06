@@ -106,9 +106,9 @@
     "theme": "dark"
   },
   "dependencies": {
-    "less": "2.7.2",
-    "mkpath": "^1.0.0",
-    "less-plugin-autoprefix": "^1.5.1"
+    "less": "3.8.0",
+    "less-plugin-autoprefix": "^2.0.0",
+    "mkpath": "^1.0.0"
   },
   "devDependencies": {
     "typescript": "^2.4.1",
