@@ -1,4 +1,11 @@
 
+**v1.5** (<small>October 2019</small>)
+=============================================
+
+# What's New
+ - Updated less to v3.9.0
+ - Updated less-plugin-autoprefix to v2.0.0
+
 **v1.4.4-1.4.5** (<small>June 2017</small>)
 =============================================
 
