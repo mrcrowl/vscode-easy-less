@@ -1,10 +1,11 @@
 
-**v1.5** (<small>October 2019</small>)
+**v1.5.0-v1.5.1** (<small>October 2019</small>)
 =============================================
 
 # What's New
  - Updated less to v3.9.0
  - Updated less-plugin-autoprefix to v2.0.0
+ - Inline Javascript must now be explictly enabled using the `javascriptEnabled` option (either per-file or via settings).  This regressed in v1.5.0 [#54](https://github.com/mrcrowl/vscode-easy-less/issues/54), due to security changes introduced by LESS v3.0.0.
 
 **v1.4.4-1.4.5** (<small>June 2017</small>)
 =============================================

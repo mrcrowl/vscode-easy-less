@@ -12,6 +12,7 @@ const SUPPORTED_PER_FILE_OPTS = {
     "relativeUrls": true,
     "ieCompat": true,
     "autoprefixer": true,
+    "javascriptEnabled": true,
 };
 
 const ARRAY_OPTS = {

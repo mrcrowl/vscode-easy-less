@@ -38,6 +38,7 @@ export interface EasyLessOptions extends Less.Options {
     relativeUrls?: boolean;
     sourceMapFileInline?: boolean;
     autoprefixer?: string | string[];
+    javascriptEnabled?: boolean;
     // sourceMapURL?: string;
     // sourceMapBasepath?: string;
     // sourceMapRootpath?: string;

@@ -67,6 +67,7 @@ declare module Less {
         filename?: string;
         plugins: Plugin[];
         rootFileInfo?: RootFileInfo;
+        javascriptEnabled?: boolean;
     }
 
     interface RenderError {

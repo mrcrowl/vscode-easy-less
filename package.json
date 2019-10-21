@@ -2,7 +2,7 @@
   "name": "easy-less",
   "displayName": "Easy LESS",
   "description": "Auto-compile LESS to CSS on save",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "publisher": "mrcrowl",
   "engines": {
     "vscode": "^1.6.0"
@@ -79,6 +79,11 @@
             "relativeUrls": {
               "type": "boolean",
               "description": "Rewrite URLs from imported files, relative to the importing file (default: false)",
+              "default": false
+            },
+            "javascriptEnabled": {
+              "type": "boolean",
+              "description": "Enable inline javasript in less files within backticks (`) (default: false)",
               "default": false
             },
             "autoprefixer": {

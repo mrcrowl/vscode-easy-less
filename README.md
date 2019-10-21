@@ -159,6 +159,10 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
  * When `true`: prevents inlining of `data-uri`s that exceed 32KB.
  * When `false`: removes restriction on `data-uri` size.
 
+`javascriptEnabled: { boolean }` 
+ * Enables inline javascript within less files (defaults to `false`).
+ * Inline JavaScript occurs for any text within backticks, e.g. ``font-weight: `10+10`px';``
+
 ## Settings Cascade Order
 
 Settings are read and applied in the following order:
@@ -299,11 +303,17 @@ Settings are read and applied in the following order:
     >     }
     > }
     > ```
-   
+
+ 9. How do I resolve the error `"Inline JavaScript is not enabled. Is it set in your options?"`?
+    
+    > Inline JavaScript is a feature of LESS that used to be enabled by default.  It was disabled by default in v3.0.0 of LESS for security reasons. You can use the `javascriptEnabled` setting to override this behaviour by setting the value to `true`.
+    >
+    > If you receive this error unintentionally, there are most likely one or more backticks (``) in your .less file.
+}
     
 # Acknowledgements
 
  * Configuration concepts borrowed from [Jonathan Diehl's](#https://github.com/jdiehl) [brackets-less-autocompile](https://github.com/jdiehl/brackets-less-autocompile).
  * Contributors: [CnSimonChan](https://github.com/CnSimonChan), [gprasanth](https://github.com/gprasanth), [elvis-macak](https://github.com/elvis-macak)
  * Feedback/ideas: [thecosss](https://github.com/thecosss), [pnkr](https://github.com/pnkr), [ep-mark](https://github.com/ep-mark), 
-   [icefrog](https://github.com/NateLing), , [yunfeizuo](https://github.com/yunfeizuo), [Tobyee](https://github.com/Tobyee), [sagive](https://github.com/sagive), [DifficultNick](https://github.com/DifficultNick), Alejandro L and Kenneth Davila 
+   [icefrog](https://github.com/NateLing), , [yunfeizuo](https://github.com/yunfeizuo), [Tobyee](https://github.com/Tobyee), [sagive](https://github.com/sagive), [DifficultNick](https://github.com/DifficultNick), Alejandro L and Kenneth Davila, [linxz](https://github.com/linxz) & [docguytraining](https://github.com/docguytraining), [kranack](https://github.com/kranack)
