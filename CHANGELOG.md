@@ -1,15 +1,18 @@
 
-**v1.6.0** (<small>January 2020</small>)
+**v1.6.0-v1.6.1** (<small>January 2020</small>)
 =============================================
 
-# What's New
+## What's New
  - Added support for settings in workspaces with multiple projects&mdash;[#50](https://github.com/mrcrowl/vscode-easy-less/issues/50)
  - Added a new variable `${workspaceFolder}` which can be used to interpolate the folder root path into an `out` or `main` setting.
+
+## Bug Fixes
+ - Fix for compiler stalling when less error exists in file other than being saved&mdash;[#55](https://github.com/mrcrowl/vscode-easy-less/issues/55)
 
 **v1.5.0-v1.5.1** (<small>October 2019</small>)
 =============================================
 
-# What's New
+## What's New
  - Updated less to v3.9.0
  - Updated less-plugin-autoprefix to v2.0.0
  - Inline Javascript must now be explictly enabled using the `javascriptEnabled` option (either per-file or via settings).  This regressed in v1.5.0 [#54](https://github.com/mrcrowl/vscode-easy-less/issues/54), due to security changes introduced by LESS v3.0.0.

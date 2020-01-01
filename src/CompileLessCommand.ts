@@ -10,6 +10,8 @@ import LessCompiler = require("./LessCompiler");
 import StatusBarMessage = require("./StatusBarMessage");
 import StatusBarMessageTypes = require("./StatusBarMessageTypes");
 
+const RANGE_EOL = 4096;
+
 class CompileLessCommand
 {
     public constructor(
@@ -36,37 +38,76 @@ class CompileLessCommand
         }
         catch (error)
         {
-            let message: string = error.message;
-            let range: vscode.Range = new vscode.Range(0, 0, 0, 0);
-
-            if (error.code)
-            {
-                // fs errors
-                const fileSystemError = <FileSystemError>error;
-                switch (fileSystemError.code)
-                {
-                    case 'EACCES':
-                    case 'ENOENT':
-                        message = `Cannot open file '${fileSystemError.path}'`;
-                        const firstLine: vscode.TextLine = this.document.lineAt(0);
-                        range = new vscode.Range(0, 0, 0, firstLine.range.end.character);
-                }
-            }
-            else if (error.line !== undefined && error.column !== undefined)
-            {
-                // less errors, try to highlight the affected range
-                const lineIndex: number = error.line - 1;
-                const affectedLine: vscode.TextLine = this.document.lineAt(lineIndex);
-                range = new vscode.Range(lineIndex, error.column, lineIndex, affectedLine.range.end.character);
-            }
-
             compilingMessage.dispose();
-            const diagnosis = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
-            this.lessDiagnosticCollection.set(this.document.uri, [diagnosis]);
 
-            StatusBarMessage.show("$(alert) Error compiling less (more detail in Errors and Warnings)", StatusBarMessageTypes.ERROR);
+            let { message, range } = this.getErrorMessageAndRange(error);
+            let affectedUri = this.getErrorAffectedUri(error);
+
+            if (affectedUri === undefined || range === undefined)
+            {
+                affectedUri = this.document.uri;
+                range = new vscode.Range(0, 0, 0, 0);
+            }
+
+            const diagnosis = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
+            this.lessDiagnosticCollection.set(affectedUri, [diagnosis]);
+
+            StatusBarMessage.show("$(alert) Error compiling less (more detail in Problems)", StatusBarMessageTypes.ERROR);
         }
+    }
+
+    private getErrorAffectedUri(error: any): vscode.Uri | undefined
+    {
+        let affectedUri: vscode.Uri | undefined;
+        
+        if (error.filename)
+        {
+            affectedUri = vscode.Uri.file(error.filename);
+            const isCurrentDocument = !error.filename.includes("/")
+                && !error.filename.includes("\\")
+                && error.filename === path.basename(this.document.fileName);
+
+            if (isCurrentDocument)
+            {
+                affectedUri = this.document.uri;
+            }
+        }
+
+        return affectedUri;
+    }
+    
+    private getErrorMessageAndRange(error: any): { message: string, range: vscode.Range | undefined }
+    {
+        if (error.code)
+        {
+            // fs errors
+            const fileSystemError = <FileSystemError>error;
+            switch (fileSystemError.code)
+            {
+                case 'EACCES':
+                case 'ENOENT':
+                    return {
+                        message: `Cannot open file '${fileSystemError.path}'`,
+                        range: new vscode.Range(0, 0, 0, RANGE_EOL),
+                    };
+            }
+        }
+        else if (error.line !== undefined && error.column !== undefined)
+        {
+            // less errors: try to highlight the affected range
+            const lineIndex: number = error.line - 1;
+            return {
+                message: error.message,
+                range: new vscode.Range(lineIndex, error.column, lineIndex, RANGE_EOL),
+            };
+        }
+    
+        return {
+            message: error.message,
+            range: new vscode.Range(0, 0, 0, RANGE_EOL),
+        };
     }
 }
 
+                
 export = CompileLessCommand;

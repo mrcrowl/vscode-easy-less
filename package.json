@@ -2,7 +2,7 @@
   "name": "easy-less",
   "displayName": "Easy LESS",
   "description": "Auto-compile LESS to CSS on save",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "publisher": "mrcrowl",
   "engines": {
     "vscode": "^1.22.0"
