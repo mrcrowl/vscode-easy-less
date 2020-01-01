@@ -5,7 +5,7 @@
   "version": "1.5.1",
   "publisher": "mrcrowl",
   "engines": {
-    "vscode": "^1.6.0"
+    "vscode": "^1.22.0"
   },
   "categories": [
     "Other"
@@ -33,6 +33,7 @@
         "less.compile": {
           "type": "object",
           "description": "Configuration options for Easy LESS extension.",
+          "scope": "resource",
           "properties": {
             "compress": {
               "type": "boolean",

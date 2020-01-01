@@ -22,7 +22,7 @@ class CompileLessCommand
     {
         StatusBarMessage.hideError();
 
-        const globalOptions: Configuration.EasyLessOptions = Configuration.getGlobalOptions(this.document.fileName);
+        const globalOptions: Configuration.EasyLessOptions = Configuration.getGlobalOptions(this.document);
         const compilingMessage = StatusBarMessage.show("$(zap) Compiling less --> css", StatusBarMessageTypes.INDEFINITE);
         const startTime: number = Date.now();
         try

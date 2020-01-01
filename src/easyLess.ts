@@ -15,7 +15,7 @@ export function activate(context: vscode.ExtensionContext)
     // compile less command
     const compileLessSub = vscode.commands.registerCommand(COMPILE_COMMAND, () =>
     {
-        const activeEditor: vscode.TextEditor = vscode.window.activeTextEditor;
+        const activeEditor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
         if (activeEditor)
         {
             const document = activeEditor.document;
