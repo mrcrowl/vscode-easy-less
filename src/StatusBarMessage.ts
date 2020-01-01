@@ -18,7 +18,7 @@ export function hideError()
 
 export function show(message: string, type: StatusBarMessageTypes)
 {
-    this.hideError();
+    hideError();
 
     switch (type)
     {
