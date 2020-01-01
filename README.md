@@ -291,6 +291,8 @@ Settings are read and applied in the following order:
     >     }
     > }
     > ```
+    >
+    > Alternatively, the variable `${workspaceFolder}` can be used, which supports both multi-root workspaces and single folders.
 
  8. How do I generate sourcemap (`*.css.map`) files?
 

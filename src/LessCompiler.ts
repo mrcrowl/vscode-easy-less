@@ -9,6 +9,7 @@ import { EasyLessOptions } from "./Configuration";
 import Configuration = require("./Configuration");
 import FileOptionsParser = require("./FileOptionsParser");
 import { LessDocumentResolverPlugin } from "./LessDocumentResolverPlugin";
+import { Uri } from 'vscode'
 
 const DEFAULT_EXT = ".css";
 
@@ -52,7 +53,7 @@ export async function compile(lessFile: string, content: string, defaults: Confi
     {
         // out is set: output to the given file name
         // check whether is a folder first
-        const interpolatedOut = intepolatePath(out);
+        const interpolatedOut = intepolatePath(out, lessFile);
 
         cssRelativeFilename = interpolatedOut;
         const lastCharacter = cssRelativeFilename.slice(-1);
@@ -130,9 +131,26 @@ function cleanBrowsersList(autoprefixOption: string | string[]): string[]
     return browsers.map(browser => browser.trim());
 }
 
-function intepolatePath(this: void, path: string): string
+function intepolatePath(this: void, path: string, lessFilePath: string): string
 {
-    return (<string>path).replace(/\$\{workspaceRoot\}/g, vscode.workspace.rootPath);
+    if (path.includes("${workspaceFolder}"))
+    {
+        const lessFileUri = Uri.file(lessFilePath);
+        const workspaceFolder = vscode.workspace.getWorkspaceFolder(lessFileUri);
+        if (workspaceFolder) {
+            path = path.replace(/\$\{workspaceFolder\}/g, workspaceFolder.uri.fsPath);
+        }
+    }
+
+    if (path.includes("${workspaceRoot}"))
+    {
+        if (vscode.workspace.rootPath)
+        {
+            path = path.replace(/\$\{workspaceRoot\}/g, vscode.workspace.rootPath);
+        }
+    }
+
+    return path;
 }
 
 function resolveMainFilePaths(this: void, main: string | string[], lessPath: string, currentLessFile: string): string[]
@@ -151,7 +169,7 @@ function resolveMainFilePaths(this: void, main: string | string[], lessPath: str
         mainFiles = [];
     }
 
-    const interpolatedMainFilePaths: string[] = mainFiles.map(mainFile => intepolatePath(mainFile));
+    const interpolatedMainFilePaths: string[] = mainFiles.map(mainFile => intepolatePath(mainFile, lessPath));
     const resolvedMainFilePaths: string[] = interpolatedMainFilePaths.map(mainFile => path.resolve(lessPath, mainFile));
     if (resolvedMainFilePaths.indexOf(currentLessFile) >= 0)
     {

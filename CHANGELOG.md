@@ -1,4 +1,11 @@
 
+**v1.6.0** (<small>January 2020</small>)
+=============================================
+
+# What's New
+ - Added support for settings in workspaces with multiple projects&mdash;[#50](https://github.com/mrcrowl/vscode-easy-less/issues/50)
+ - Added a new variable `${workspaceFolder}` which can be used to interpolate the folder root path into an `out` or `main` setting.
+
 **v1.5.0-v1.5.1** (<small>October 2019</small>)
 =============================================
 
