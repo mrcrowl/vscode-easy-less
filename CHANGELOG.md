@@ -1,5 +1,5 @@
 
-**v1.6.0-v1.6.2** (<small>January 2020</small>)
+**v1.6.0-v1.6.3** (<small>January 2020</small>)
 =============================================
 
 ## What's New
@@ -9,6 +9,7 @@
 ## Bug Fixes
  - Fix for compiler stalling when less error exists in file other than being saved&mdash;[#55](https://github.com/mrcrowl/vscode-easy-less/issues/55)
  - Fix for palette command "Compile LESS to CSS" not triggering in newer versions of VS code.&mdash;[#46](https://github.com/mrcrowl/vscode-easy-less/issues/46)
+ - Fix for `sourceMapURL` not matching generated file when using `main` and `out` settings together.&mdash;[#43](https://github.com/mrcrowl/vscode-easy-less/issues/43)
 
 **v1.5.0-v1.5.1** (<small>October 2019</small>)
 =============================================

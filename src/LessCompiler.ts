@@ -94,7 +94,8 @@ export async function compile(lessFile: string, content: string, defaults: Confi
         if (!sourceMapOptions.sourceMapFileInline)
         {
             sourceMapFile = cssFile + '.map';
-            sourceMapOptions.sourceMapURL = "./" + baseFilename + extension + ".map";
+            const sourceMapFilename = path.parse(sourceMapFile).base;
+            sourceMapOptions.sourceMapURL = "./" + sourceMapFilename; // baseFilename + extension + ".map";
         }
 
         options.sourceMap = sourceMapOptions;
