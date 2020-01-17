@@ -23,6 +23,7 @@ export function activate(context: vscode.ExtensionContext)
             if (document.fileName.endsWith(LESS_EXT))
             {
                 document.save();
+                new CompileLessCommand(document, lessDiagnosticCollection).execute();
             }
             else
             {
