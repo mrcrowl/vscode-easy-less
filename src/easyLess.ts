@@ -12,29 +12,23 @@ export function activate(context: vscode.ExtensionContext) {
   lessDiagnosticCollection = vscode.languages.createDiagnosticCollection();
 
   // compile less command
-  const compileLessSub = vscode.commands.registerCommand(
-    COMPILE_COMMAND,
-    () => {
-      const activeEditor: vscode.TextEditor | undefined =
-        vscode.window.activeTextEditor;
-      if (activeEditor) {
-        const document = activeEditor.document;
+  const compileLessSub = vscode.commands.registerCommand(COMPILE_COMMAND, () => {
+    const activeEditor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
+    if (activeEditor) {
+      const document = activeEditor.document;
 
-        if (document.fileName.endsWith(LESS_EXT)) {
-          document.save();
-          new CompileLessCommand(document, lessDiagnosticCollection).execute();
-        } else {
-          vscode.window.showWarningMessage(
-            "This command only works for .less files."
-          );
-        }
+      if (document.fileName.endsWith(LESS_EXT)) {
+        document.save();
+        new CompileLessCommand(document, lessDiagnosticCollection).execute();
       } else {
-        vscode.window.showInformationMessage(
-          "This command is only available when a .less editor is open."
-        );
+        vscode.window.showWarningMessage("This command only works for .less files.");
       }
+    } else {
+      vscode.window.showInformationMessage(
+        "This command is only available when a .less editor is open."
+      );
     }
-  );
+  });
 
   // compile less on save when file is dirty
   const didSaveEvent = vscode.workspace.onDidSaveTextDocument((document) => {
@@ -51,13 +45,11 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   // dismiss less errors on file close
-  const didCloseEvent = vscode.workspace.onDidCloseTextDocument(
-    (doc: vscode.TextDocument) => {
-      if (doc.fileName.endsWith(LESS_EXT)) {
-        lessDiagnosticCollection.delete(doc.uri);
-      }
+  const didCloseEvent = vscode.workspace.onDidCloseTextDocument((doc: vscode.TextDocument) => {
+    if (doc.fileName.endsWith(LESS_EXT)) {
+      lessDiagnosticCollection.delete(doc.uri);
     }
-  );
+  });
 
   context.subscriptions.push(compileLessSub);
   context.subscriptions.push(willSaveEvent);

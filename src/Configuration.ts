@@ -1,9 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 
-export function getGlobalOptions(
-  document: vscode.TextDocument
-): EasyLessOptions {
+export function getGlobalOptions(document: vscode.TextDocument): EasyLessOptions {
   const lessFilenamePath: path.ParsedPath = path.parse(document.fileName);
   const defaultOptions: EasyLessOptions = {
     plugins: [],
@@ -17,9 +15,7 @@ export function getGlobalOptions(
   return { ...defaultOptions, ...configuredOptions };
 }
 
-export function getRootFileInfo(
-  parsedPath: path.ParsedPath
-): Less.RootFileInfo {
+export function getRootFileInfo(parsedPath: path.ParsedPath): Less.RootFileInfo {
   parsedPath.ext = ".less";
   parsedPath.base = parsedPath.name + ".less";
 

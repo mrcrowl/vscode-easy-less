@@ -25,10 +25,7 @@ export function show(message: string, type: StatusBarMessageTypes) {
       return vscode.window.setStatusBarMessage(message);
 
     case StatusBarMessageTypes.ERROR:
-      errorMessage = vscode.window.createStatusBarItem(
-        vscode.StatusBarAlignment.Left,
-        0
-      );
+      errorMessage = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
       errorMessage.text = message;
       errorMessage.command = "workbench.action.showErrorsWarnings";
       errorMessage.color = ERROR_COLOR_CSS;

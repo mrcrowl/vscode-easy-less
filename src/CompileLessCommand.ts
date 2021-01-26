@@ -26,11 +26,7 @@ export default class CompileLessCommand {
     );
     const startTime: number = Date.now();
     try {
-      await LessCompiler.compile(
-        this.document.fileName,
-        this.document.getText(),
-        globalOptions
-      );
+      await LessCompiler.compile(this.document.fileName, this.document.getText(), globalOptions);
       const elapsedTime: number = Date.now() - startTime;
       compilingMessage.dispose();
       this.lessDiagnosticCollection.set(this.document.uri, []);
@@ -50,11 +46,7 @@ export default class CompileLessCommand {
         range = new vscode.Range(0, 0, 0, 0);
       }
 
-      const diagnosis = new vscode.Diagnostic(
-        range,
-        message,
-        vscode.DiagnosticSeverity.Error
-      );
+      const diagnosis = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
       this.lessDiagnosticCollection.set(affectedUri, [diagnosis]);
 
       StatusBarMessage.show(

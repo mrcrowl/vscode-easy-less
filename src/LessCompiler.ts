@@ -17,19 +17,12 @@ export async function compile(
   content: string,
   defaults: Configuration.EasyLessOptions
 ): Promise<void> {
-  const options: Configuration.EasyLessOptions = FileOptionsParser.parse(
-    content,
-    defaults
-  );
+  const options: Configuration.EasyLessOptions = FileOptionsParser.parse(content, defaults);
   const lessPath: string = path.dirname(lessFile);
 
   // main is set: compile the referenced file instead
   if (options.main) {
-    const mainFilePaths: string[] = resolveMainFilePaths(
-      options.main,
-      lessPath,
-      lessFile
-    );
+    const mainFilePaths: string[] = resolveMainFilePaths(options.main, lessPath, lessFile);
     if (mainFilePaths && mainFilePaths.length > 0) {
       for (const filePath of mainFilePaths) {
         const mainPath: path.ParsedPath = path.parse(filePath);
@@ -125,11 +118,7 @@ function cleanBrowsersList(autoprefixOption: string | string[]): string[] {
   return browsers.map((browser) => browser.trim());
 }
 
-function intepolatePath(
-  this: void,
-  path: string,
-  lessFilePath: string
-): string {
+function intepolatePath(this: void, path: string, lessFilePath: string): string {
   if (path.includes("${workspaceFolder}")) {
     const lessFileUri = Uri.file(lessFilePath);
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(lessFileUri);
@@ -165,8 +154,8 @@ function resolveMainFilePaths(
   const interpolatedMainFilePaths: string[] = mainFiles.map((mainFile) =>
     intepolatePath(mainFile, lessPath)
   );
-  const resolvedMainFilePaths: string[] = interpolatedMainFilePaths.map(
-    (mainFile) => path.resolve(lessPath, mainFile)
+  const resolvedMainFilePaths: string[] = interpolatedMainFilePaths.map((mainFile) =>
+    path.resolve(lessPath, mainFile)
   );
   if (resolvedMainFilePaths.indexOf(currentLessFile) >= 0) {
     return []; // avoid infinite loops
@@ -176,11 +165,7 @@ function resolveMainFilePaths(
 }
 
 // writes a file's contents in a path where directories may or may not yet exist
-function writeFileContents(
-  this: void,
-  filepath: string,
-  content: any
-): Promise<any> {
+function writeFileContents(this: void, filepath: string, content: any): Promise<any> {
   return new Promise((resolve, reject) => {
     mkpath(path.dirname(filepath), (err) => {
       if (err) {
@@ -198,11 +183,7 @@ function writeFileContents(
   });
 }
 
-function readFilePromise(
-  this: void,
-  filename: string,
-  encoding: string
-): Promise<string> {
+function readFilePromise(this: void, filename: string, encoding: string): Promise<string> {
   return new Promise((resolve, reject) => {
     fs.readFile(filename, encoding, (err: any, data: string) => {
       if (err) {
