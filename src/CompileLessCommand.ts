@@ -74,6 +74,28 @@ export default class CompileLessCommand {
     return affectedUri;
   }
 
+  /*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  */
+
   private getErrorMessageAndRange(
     error: any
   ): { message: string; range: vscode.Range | undefined } {
