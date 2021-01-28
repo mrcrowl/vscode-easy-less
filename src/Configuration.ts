@@ -26,7 +26,7 @@ export function getRootFileInfo(parsedPath: path.ParsedPath): Less.RootFileInfo 
     entryPath: parsedPath.dir + "/",
     rootpath: null!,
     rootFilename: null!,
-    reference: false,
+    reference: undefined!,
   };
 }
 
