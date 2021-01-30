@@ -188,6 +188,30 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
 - Enables inline javascript within less files (defaults to `false`).
 - Inline JavaScript occurs for any text within backticks, e.g. `` font-weight: `10+10`px'; ``
 
+`math: { "parens-division" | "parens" | "always" | "strict" | "strict-legacy" }`
+
+- Controls the `math` option [used by the less compiler](http://lesscss.org/usage/#less-options-math).
+- The default changed to `"parens-division"` in [less v4.0.0](https://github.com/less/less.js/releases/tag/v4.0.0) (and consequently in Easy LESS v1.7.0)
+- The default for Easy LESS matches upstream, which is `"parens-division"`.
+- To restore the less v3.x behaviour, use:
+  ```json
+  {
+    "less.compile": {
+      "math": "always"
+    }
+  }
+  ```
+  ... or, using a per-file directive:
+  ```less
+  // math: always
+  ```
+  Alternatively, you can wrap your expression in parentheses:
+  ```less
+  .w-third {
+    width: (100% / 3);
+  }
+  ```
+
 ## Settings Cascade Order
 
 Settings are read and applied in the following order:

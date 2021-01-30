@@ -11,6 +11,7 @@ const SUPPORTED_PER_FILE_OPTS = {
   ieCompat: true,
   autoprefixer: true,
   javascriptEnabled: true,
+  math: true,
 };
 
 const ARRAY_OPTS: { [key: string]: any } = {

@@ -2,7 +2,7 @@
   "name": "easy-less",
   "displayName": "Easy LESS",
   "description": "Auto-compile LESS to CSS on save",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "publisher": "mrcrowl",
   "engines": {
     "vscode": "^1.31.0"
@@ -95,6 +95,18 @@
               ],
               "description": "The 'browsers' argument for autoprefixer plugin (see https://github.com/ai/browserslist#queries)",
               "default": "> 5%, last 2 Chrome versions, not ie 6-9"
+            },
+            "math": {
+              "type": "string",
+              "description": "The `math` mode used by less. Default is `parens-division` (see http://lesscss.org/usage/#less-options-math)",
+              "oneOf": [
+                "parens-division",
+                "parens",
+                "always",
+                "strict",
+                "strict-legacy"
+              ],
+              "default": "parens-division"
             }
           }
         }
