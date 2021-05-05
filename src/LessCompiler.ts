@@ -49,7 +49,7 @@ export async function compile(
   if (typeof out === "string") {
     // out is set: output to the given file name
     // check whether is a folder first
-    const interpolatedOut = intepolatePath(out, lessFile);
+    const interpolatedOut = intepolatePath(out.replace('$1', baseFilename).replace('$2', extension), lessFile);
 
     cssRelativeFilename = interpolatedOut;
     const lastCharacter = cssRelativeFilename.slice(-1);
