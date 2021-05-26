@@ -172,7 +172,7 @@ function writeFileContents(this: void, filepath: string, content: any): Promise<
         return reject(err);
       }
 
-      fs.writeFile(filepath, content, (err) => {
+      fs.writeFile(filepath, content.toString(), (err) => {
         if (err) {
           reject(err);
         } else {
