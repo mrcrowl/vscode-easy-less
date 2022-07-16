@@ -7,7 +7,13 @@
     "sourceMap": true,
     "moduleResolution": "node",
     "strict": true,
-    "esModuleInterop": true
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "noImplicitOverride": false,
+    "noImplicitReturns": false,
+    "esModuleInterop": true,
+    "types": ["node"]
   },
-  "exclude": ["node_modules", "**/nodemodules/**"]
+  "include": ["src"],
+  "exclude": ["node_modules", "**/node_modules/**"]
 }

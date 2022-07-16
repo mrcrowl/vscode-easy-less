@@ -1,9 +1,7 @@
-import * as fs from 'fs';
+import fs from 'fs/promises';
 import less from 'less';
-import mkpath from 'mkpath';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { Uri } from 'vscode';
 import * as Configuration from './Configuration';
 import { EasyLessOptions } from './Configuration';
 import * as FileOptionsParser from './FileOptionsParser';
@@ -28,7 +26,7 @@ export async function compile(
         const mainPath: path.ParsedPath = path.parse(filePath);
         const mainRootFileInfo = Configuration.getRootFileInfo(mainPath);
         const mainDefaults = { ...defaults, rootFileInfo: mainRootFileInfo };
-        const mainContent = await readFilePromise(filePath, 'utf-8');
+        const mainContent = await readFilePromise(filePath);
         await compile(filePath, mainContent, mainDefaults);
       }
       return;
@@ -116,9 +114,9 @@ function cleanBrowsersList(autoprefixOption: string | string[]): string[] {
   return browsers.map(browser => browser.trim());
 }
 
-function intepolatePath(this: void, path: string, lessFilePath: string): string {
+function intepolatePath(path: string, lessFilePath: string): string {
   if (path.includes('${workspaceFolder}')) {
-    const lessFileUri = Uri.file(lessFilePath);
+    const lessFileUri = vscode.Uri.file(lessFilePath);
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(lessFileUri);
     if (workspaceFolder) {
       path = path.replace(/\$\{workspaceFolder\}/g, workspaceFolder.uri.fsPath);
@@ -158,41 +156,20 @@ function resolveMainFilePaths(
   return resolvedMainFilePaths;
 }
 
-// writes a file's contents in a path where directories may or may not yet exist
-function writeFileContents(this: void, filepath: string, content: any): Promise<any> {
-  return new Promise((resolve, reject) => {
-    mkpath(path.dirname(filepath), err => {
-      if (err) {
-        return reject(err);
-      }
-
-      fs.writeFile(filepath, content.toString(), err => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(void 0);
-        }
-      });
-    });
-  });
+// Writes a file's contents to a path and creates directories if they don't exist.
+async function writeFileContents(filepath: string, content: any): Promise<void> {
+  await fs.mkdir(path.dirname(filepath), { recursive: true });
+  await fs.writeFile(filepath, content.toString());
 }
 
-function readFilePromise(this: void, filename: string, encoding: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    fs.readFile(filename, encoding, (err: any, data: string) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
-  });
+function readFilePromise(filename: string): Promise<string> {
+  return fs.readFile(filename, { encoding: 'utf-8' });
 }
 
-function chooseExtension(this: void, options: EasyLessOptions): string {
+function chooseExtension(options: EasyLessOptions): string {
   if (options && options.outExt) {
     if (options.outExt === '') {
-      // special case for no extension (no idea if anyone would really want this?)
+      // Special case for no extension (no idea if anyone would really want this?).
       return '';
     }
 
@@ -202,7 +179,7 @@ function chooseExtension(this: void, options: EasyLessOptions): string {
   return DEFAULT_EXT;
 }
 
-function ensureDotPrefixed(this: void, extension: string): string {
+function ensureDotPrefixed(extension: string): string {
   if (extension.startsWith('.')) {
     return extension;
   }
