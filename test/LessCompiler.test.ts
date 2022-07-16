@@ -10,18 +10,14 @@ vi.mock('vscode');
 
 const CSS_CONTENTS = '.thing.sub { background-color: hotpink }';
 const LESS_CONTENTS = `{ .thing { &.sub { background-color: hotpink; } } }`;
-
+const RENDER_RESULT = { css: CSS_CONTENTS } as Less.RenderOutput;
 describe('compile: characterise existing behaviour', () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
   it('writes css file - no options', async () => {
-    vi.spyOn(less, 'render').mockImplementationOnce(async () => {
-      return {
-        css: CSS_CONTENTS,
-      } as Less.RenderOutput;
-    });
+    vi.spyOn(less, 'render').mockResolvedValue(RENDER_RESULT);
     const mkdirSpy = vi.spyOn(fs, 'mkdir').mockResolvedValue(undefined);
     const writeFileSpy = vi.spyOn(fs, 'writeFile').mockResolvedValue(undefined);
     const result = await compile('/home/mrcrowl/styles.less', LESS_CONTENTS, {});
@@ -33,8 +29,14 @@ describe('compile: characterise existing behaviour', () => {
     expect(writeFileSpy.mock.lastCall).toContain(CSS_CONTENTS);
   });
 
-  // it('exits early', async () => {
-  //   const result = compile('', LESS_CONTENTS, { out: null! });
-  //   expect(result).();
-  // });
+  it('no compile for out: false', async () => {
+    const renderSpy = vi.spyOn(less, 'render').mockResolvedValue(RENDER_RESULT);
+    const mkdirSpy = vi.spyOn(fs, 'mkdir').mockResolvedValue(undefined);
+    const writeFileSpy = vi.spyOn(fs, 'writeFile').mockResolvedValue(undefined);
+    const result = await compile('/home/mrcrowl/styles.less', LESS_CONTENTS, { out: false });
+    expect(result).toBeUndefined();
+    expect(renderSpy).not.toHaveBeenCalledOnce();
+    expect(mkdirSpy).not.toHaveBeenCalledOnce();
+    expect(writeFileSpy).not.toHaveBeenCalledOnce();
+  });
 });
