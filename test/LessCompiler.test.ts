@@ -97,6 +97,32 @@ describe('compile: characterise existing behaviour', () => {
       expect(writeFileSpy.mock.calls).toEqual([['/home/mrcrowl/dist/styles.wxss', CSS_CONTENTS]]);
     });
 
+    it('should resolve relative paths', async () => {
+      const options = { out: '../out/' };
+      await compile(`/var/dev/test.less`, LESS_CONTENTS, options);
+
+      expect(mkdirSpy.mock.calls).toEqual([[`/var/out`, { recursive: true }]]);
+      expect(writeFileSpy.mock.calls).toEqual([[`/var/out/test.css`, CSS_CONTENTS]]);
+    });
+
+    it("should replace $1 with the file's extensionless name", async () => {
+      // Extra setup for workspace folder path interpolation.
+      const options = { out: '$1' };
+      await compile(`/var/dev/test.less`, LESS_CONTENTS, options);
+
+      expect(mkdirSpy.mock.calls).toEqual([[`/var/dev`, { recursive: true }]]);
+      expect(writeFileSpy.mock.calls).toEqual([[`/var/dev/test.css`, CSS_CONTENTS]]);
+    });
+
+    it("should replace $2 with the file's extension", async () => {
+      // Extra setup for workspace folder path interpolation.
+      const options = { out: '$1$2' };
+      await compile(`/var/dev/test.less`, LESS_CONTENTS, options);
+
+      expect(mkdirSpy.mock.calls).toEqual([[`/var/dev`, { recursive: true }]]);
+      expect(writeFileSpy.mock.calls).toEqual([[`/var/dev/test.css`, CSS_CONTENTS]]);
+    });
+
     it('should interpolate the workspace workspaceFolder', async () => {
       // Extra setup for workspace folder path interpolation.
       vi.spyOn(Uri, 'file').mockReturnValue({} as Uri);

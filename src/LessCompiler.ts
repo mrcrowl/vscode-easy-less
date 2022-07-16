@@ -19,7 +19,6 @@ export async function compile(
   const lessPath: string = path.dirname(lessFile);
 
   // Option `main`.
-
   if (options.main) {
     // ###
     // When `main` is set: compile the referenced file(s) instead.
@@ -36,69 +35,27 @@ export async function compile(
     }
   }
 
-  // Option `out`
-
+  // No output.
   if (options.out === null || options.out === false) {
-    // is null or false: do not compile
     return;
   }
 
-  const out: string | boolean | undefined = options.out;
-  const extension: string = chooseExtension(options);
-  const baseFilename: string = path.parse(lessFile).name;
-
-  let cssRelativeFilename: string;
-  if (typeof out === 'string') {
-    // `out` is set:
-    // - Output to the given file name.
-    const interpolatedOut = intepolatePath(out.replace('$1', baseFilename).replace('$2', extension), lessFile);
-
-    cssRelativeFilename = interpolatedOut;
-
-    // - Check whether is a folder first.
-    const lastCharacter = cssRelativeFilename.slice(-1);
-    if (lastCharacter === '/' || lastCharacter === '\\') {
-      cssRelativeFilename += baseFilename + extension;
-    } else if (path.extname(cssRelativeFilename) === '') {
-      cssRelativeFilename += extension;
-    }
-  } else {
-    // out is not set: output to the same basename as the less file
-    cssRelativeFilename = baseFilename + extension;
-  }
-
-  const cssFile = path.resolve(lessPath, cssRelativeFilename);
+  // Option `out`
+  const cssFilepath = chooseOutputFilename(options, lessFile, lessPath);
   delete options.out;
 
-  // Option `sourceMap`
-
+  // Option `sourceMap`.
   let sourceMapFile: string | undefined;
   if (options.sourceMap) {
-    // ###
-    // currently just has support for writing .map file to same directory
-    const lessPath: string = path.parse(lessFile).dir;
-    const cssPath: string = path.parse(cssFile).dir;
-    const lessRelativeToCss: string = path.relative(cssPath, lessPath);
+    options.sourceMap = configureSourceMap(options, lessFile, cssFilepath);
 
-    const sourceMapOptions = <Less.SourceMapOption>{
-      outputSourceFiles: false,
-      sourceMapBasepath: lessPath,
-      sourceMapFileInline: options.sourceMapFileInline,
-      sourceMapRootpath: lessRelativeToCss,
-    };
-
-    if (!sourceMapOptions.sourceMapFileInline) {
-      // ###
-      sourceMapFile = `${cssFile}.map`;
-      const sourceMapFilename = path.parse(sourceMapFile).base;
-      sourceMapOptions.sourceMapURL = `./${sourceMapFilename}`; // baseFilename + extension + ".map";
+    if (!options.sourceMap.sourceMapFileInline) {
+      sourceMapFile = `${cssFilepath}.map`;
+      options.sourceMap.sourceMapURL = `./${path.parse(sourceMapFile).base}`; // baseFilename + extension + ".map";
     }
-
-    options.sourceMap = sourceMapOptions;
   }
 
-  // Option `plugins`
-
+  // Option `autoprefixer`.
   options.plugins = [];
   if (options.autoprefixer) {
     const LessPluginAutoPrefix = require('less-plugin-autoprefix');
@@ -112,10 +69,63 @@ export async function compile(
 
   // Render to CSS.
   const output = await less.render(content, options);
-  await writeFileContents(cssFile, output.css);
+  await writeFileContents(cssFilepath, output.css);
   if (output.map && sourceMapFile) {
     await writeFileContents(sourceMapFile, output.map);
   }
+}
+
+function chooseOutputFilename(options: Configuration.EasyLessOptions, lessFile: string, lessPath: string) {
+  const out: string | boolean | undefined = options.out;
+  const extension: string = chooseExtension(options);
+  const filenameNoExtension: string = path.parse(lessFile).name;
+
+  let cssRelativeFilename: string;
+  if (typeof out === 'string') {
+    // Output to the specified file name.
+    const interpolatedOut = intepolatePath(out.replace('$1', filenameNoExtension).replace('$2', extension), lessFile);
+
+    cssRelativeFilename = interpolatedOut;
+
+    if (isFolder(cssRelativeFilename)) {
+      // Folder.
+      cssRelativeFilename = `${cssRelativeFilename}${filenameNoExtension}${extension}`;
+    } else if (hasNoExtension(cssRelativeFilename)) {
+      // No extension, append manually.
+      cssRelativeFilename = `${cssRelativeFilename}${extension}`;
+    }
+  } else {
+    // `out` not set: output to the same basename as the less file
+    cssRelativeFilename = filenameNoExtension + extension;
+  }
+
+  const cssFile = path.resolve(lessPath, cssRelativeFilename);
+  return cssFile;
+}
+
+function isFolder(filename: string): filename is `${string}/` | `${string}\\` {
+  const lastCharacter = filename.slice(-1);
+  return lastCharacter === '/' || lastCharacter === '\\';
+}
+
+function hasNoExtension(filename: string): boolean {
+  return path.extname(filename) === '';
+}
+
+function configureSourceMap(options: Configuration.EasyLessOptions, lessFile: string, cssFile: string) {
+  // currently just has support for writing .map file to same directory
+  const lessPath: string = path.parse(lessFile).dir;
+  const cssPath: string = path.parse(cssFile).dir;
+  const lessRelativeToCss: string = path.relative(cssPath, lessPath);
+
+  const sourceMapOptions: Less.SourceMapOption = {
+    outputSourceFiles: false,
+    sourceMapBasepath: lessPath,
+    sourceMapFileInline: options.sourceMapFileInline,
+    sourceMapRootpath: lessRelativeToCss,
+  };
+
+  return sourceMapOptions;
 }
 
 function cleanBrowsersList(autoprefixOption: string | string[]): string[] {
@@ -175,9 +185,7 @@ async function writeFileContents(filepath: string, content: any): Promise<void> 
 
 function chooseExtension(options: EasyLessOptions): string {
   if (options?.outExt) {
-    // ###
     if (options.outExt === '') {
-      // ###
       // Special case for no extension (no idea if anyone would really want this?).
       return '';
     }
@@ -190,7 +198,6 @@ function chooseExtension(options: EasyLessOptions): string {
 
 function ensureDotPrefixed(extension: string): string {
   if (extension.startsWith('.')) {
-    // ###
     return extension;
   }
 

@@ -98,8 +98,9 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
 
 - Redirects the css output to a different file.
 - This setting can be used to override a project-wide `"out": false` setting, where you only want certain `.less` files to be generated.
-- If filepath is used, but no file extension is specified, it will append `.css`
-- If folderpath is used, the less filename will be used, but with the `.css` extension
+- If `filepath` is used, but no file extension is specified, it will append `.css`
+- If `folderpath` is used, the less filename will be used, but with the `.css` extension
+- A folder path must end with a `/` (or `\` for Windows), e.g. `../css/` not `../css` (the latter is always interpreted as an extensionless filename).
 - Filepath is relative to the current file.
 
 `outExt: { string }`
