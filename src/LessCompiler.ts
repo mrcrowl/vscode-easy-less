@@ -1,21 +1,21 @@
-import * as fs from "fs";
-import less from "less";
-import mkpath from "mkpath";
-import * as path from "path";
-import * as vscode from "vscode";
-import { Uri } from "vscode";
-import * as Configuration from "./Configuration";
-import { EasyLessOptions } from "./Configuration";
-import * as FileOptionsParser from "./FileOptionsParser";
-import { LessDocumentResolverPlugin } from "./LessDocumentResolverPlugin";
+import * as fs from 'fs';
+import less from 'less';
+import mkpath from 'mkpath';
+import * as path from 'path';
+import * as vscode from 'vscode';
+import { Uri } from 'vscode';
+import * as Configuration from './Configuration';
+import { EasyLessOptions } from './Configuration';
+import * as FileOptionsParser from './FileOptionsParser';
+import { LessDocumentResolverPlugin } from './LessDocumentResolverPlugin';
 
-const DEFAULT_EXT = ".css";
+const DEFAULT_EXT = '.css';
 
 // compile the given less file
 export async function compile(
   lessFile: string,
   content: string,
-  defaults: Configuration.EasyLessOptions
+  defaults: Configuration.EasyLessOptions,
 ): Promise<void> {
   const options: Configuration.EasyLessOptions = FileOptionsParser.parse(content, defaults);
   const lessPath: string = path.dirname(lessFile);
@@ -28,7 +28,7 @@ export async function compile(
         const mainPath: path.ParsedPath = path.parse(filePath);
         const mainRootFileInfo = Configuration.getRootFileInfo(mainPath);
         const mainDefaults = { ...defaults, rootFileInfo: mainRootFileInfo };
-        const mainContent = await readFilePromise(filePath, "utf-8");
+        const mainContent = await readFilePromise(filePath, 'utf-8');
         await compile(filePath, mainContent, mainDefaults);
       }
       return;
@@ -46,16 +46,16 @@ export async function compile(
   const baseFilename: string = path.parse(lessFile).name;
 
   let cssRelativeFilename: string;
-  if (typeof out === "string") {
+  if (typeof out === 'string') {
     // out is set: output to the given file name
     // check whether is a folder first
     const interpolatedOut = intepolatePath(out.replace('$1', baseFilename).replace('$2', extension), lessFile);
 
     cssRelativeFilename = interpolatedOut;
     const lastCharacter = cssRelativeFilename.slice(-1);
-    if (lastCharacter === "/" || lastCharacter === "\\") {
+    if (lastCharacter === '/' || lastCharacter === '\\') {
       cssRelativeFilename += baseFilename + extension;
-    } else if (path.extname(cssRelativeFilename) === "") {
+    } else if (path.extname(cssRelativeFilename) === '') {
       cssRelativeFilename += extension;
     }
   } else {
@@ -82,9 +82,9 @@ export async function compile(
     };
 
     if (!sourceMapOptions.sourceMapFileInline) {
-      sourceMapFile = cssFile + ".map";
+      sourceMapFile = cssFile + '.map';
       const sourceMapFilename = path.parse(sourceMapFile).base;
-      sourceMapOptions.sourceMapURL = "./" + sourceMapFilename; // baseFilename + extension + ".map";
+      sourceMapOptions.sourceMapURL = './' + sourceMapFilename; // baseFilename + extension + ".map";
     }
 
     options.sourceMap = sourceMapOptions;
@@ -93,7 +93,7 @@ export async function compile(
   // plugins
   options.plugins = [];
   if (options.autoprefixer) {
-    const LessPluginAutoPrefix = require("less-plugin-autoprefix");
+    const LessPluginAutoPrefix = require('less-plugin-autoprefix');
     const browsers: string[] = cleanBrowsersList(options.autoprefixer);
     const autoprefixPlugin = new LessPluginAutoPrefix({ browsers });
 
@@ -111,15 +111,13 @@ export async function compile(
 }
 
 function cleanBrowsersList(autoprefixOption: string | string[]): string[] {
-  const browsers: string[] = Array.isArray(autoprefixOption)
-    ? autoprefixOption
-    : ("" + autoprefixOption).split(/,|;/);
+  const browsers: string[] = Array.isArray(autoprefixOption) ? autoprefixOption : ('' + autoprefixOption).split(/,|;/);
 
-  return browsers.map((browser) => browser.trim());
+  return browsers.map(browser => browser.trim());
 }
 
 function intepolatePath(this: void, path: string, lessFilePath: string): string {
-  if (path.includes("${workspaceFolder}")) {
+  if (path.includes('${workspaceFolder}')) {
     const lessFileUri = Uri.file(lessFilePath);
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(lessFileUri);
     if (workspaceFolder) {
@@ -127,7 +125,7 @@ function intepolatePath(this: void, path: string, lessFilePath: string): string 
     }
   }
 
-  if (path.includes("${workspaceRoot}")) {
+  if (path.includes('${workspaceRoot}')) {
     if (vscode.workspace.rootPath) {
       path = path.replace(/\$\{workspaceRoot\}/g, vscode.workspace.rootPath);
     }
@@ -140,10 +138,10 @@ function resolveMainFilePaths(
   this: void,
   main: string | string[],
   lessPath: string,
-  currentLessFile: string
+  currentLessFile: string,
 ): string[] {
   let mainFiles: string[];
-  if (typeof main === "string") {
+  if (typeof main === 'string') {
     mainFiles = [main];
   } else if (Array.isArray(main)) {
     mainFiles = main;
@@ -151,12 +149,8 @@ function resolveMainFilePaths(
     mainFiles = [];
   }
 
-  const interpolatedMainFilePaths: string[] = mainFiles.map((mainFile) =>
-    intepolatePath(mainFile, lessPath)
-  );
-  const resolvedMainFilePaths: string[] = interpolatedMainFilePaths.map((mainFile) =>
-    path.resolve(lessPath, mainFile)
-  );
+  const interpolatedMainFilePaths: string[] = mainFiles.map(mainFile => intepolatePath(mainFile, lessPath));
+  const resolvedMainFilePaths: string[] = interpolatedMainFilePaths.map(mainFile => path.resolve(lessPath, mainFile));
   if (resolvedMainFilePaths.indexOf(currentLessFile) >= 0) {
     return []; // avoid infinite loops
   }
@@ -167,12 +161,12 @@ function resolveMainFilePaths(
 // writes a file's contents in a path where directories may or may not yet exist
 function writeFileContents(this: void, filepath: string, content: any): Promise<any> {
   return new Promise((resolve, reject) => {
-    mkpath(path.dirname(filepath), (err) => {
+    mkpath(path.dirname(filepath), err => {
       if (err) {
         return reject(err);
       }
 
-      fs.writeFile(filepath, content.toString(), (err) => {
+      fs.writeFile(filepath, content.toString(), err => {
         if (err) {
           reject(err);
         } else {
@@ -197,9 +191,9 @@ function readFilePromise(this: void, filename: string, encoding: string): Promis
 
 function chooseExtension(this: void, options: EasyLessOptions): string {
   if (options && options.outExt) {
-    if (options.outExt === "") {
+    if (options.outExt === '') {
       // special case for no extension (no idea if anyone would really want this?)
-      return "";
+      return '';
     }
 
     return ensureDotPrefixed(options.outExt) || DEFAULT_EXT;
@@ -209,9 +203,9 @@ function chooseExtension(this: void, options: EasyLessOptions): string {
 }
 
 function ensureDotPrefixed(this: void, extension: string): string {
-  if (extension.startsWith(".")) {
+  if (extension.startsWith('.')) {
     return extension;
   }
 
-  return extension ? `.${extension}` : "";
+  return extension ? `.${extension}` : '';
 }

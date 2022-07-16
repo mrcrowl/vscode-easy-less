@@ -1,4 +1,4 @@
-import * as Configuration from "./Configuration";
+import * as Configuration from './Configuration';
 
 const SUPPORTED_PER_FILE_OPTS = {
   main: true,
@@ -18,10 +18,7 @@ const ARRAY_OPTS: { [key: string]: any } = {
   main: true,
 };
 
-export function parse(
-  line: string,
-  defaults: Configuration.EasyLessOptions
-): Configuration.EasyLessOptions {
+export function parse(line: string, defaults: Configuration.EasyLessOptions): Configuration.EasyLessOptions {
   // does line start with a comment?: //
   const commentMatch: RegExpExecArray | null = /^\s*\/\/\s*(.+)/.exec(line);
   if (!commentMatch) {
@@ -31,8 +28,8 @@ export function parse(
   const options: { [key: string]: any } = { ...defaults };
   const optionLine: string = commentMatch[1];
   const seenKeys: { [key: string]: boolean } = {};
-  for (const item of optionLine.split(",")) {
-    const i: number = item.indexOf(":");
+  for (const item of optionLine.split(',')) {
+    const i: number = item.indexOf(':');
     if (i < 0) {
       continue;
     }

@@ -1,29 +1,24 @@
-import * as vscode from "vscode";
-import * as path from "path";
+import * as vscode from 'vscode';
+import * as path from 'path';
 
-import * as Configuration from "./Configuration";
-import * as LessCompiler from "./LessCompiler";
-import * as StatusBarMessage from "./StatusBarMessage";
-import { StatusBarMessageTypes } from "./StatusBarMessageTypes";
+import * as Configuration from './Configuration';
+import * as LessCompiler from './LessCompiler';
+import * as StatusBarMessage from './StatusBarMessage';
+import { StatusBarMessageTypes } from './StatusBarMessageTypes';
 
 const RANGE_EOL = 4096;
 
 export default class CompileLessCommand {
   public constructor(
     private document: vscode.TextDocument,
-    private lessDiagnosticCollection: vscode.DiagnosticCollection
+    private lessDiagnosticCollection: vscode.DiagnosticCollection,
   ) {}
 
   public async execute() {
     StatusBarMessage.hideError();
 
-    const globalOptions: Configuration.EasyLessOptions = Configuration.getGlobalOptions(
-      this.document
-    );
-    const compilingMessage = StatusBarMessage.show(
-      "$(zap) Compiling less --> css",
-      StatusBarMessageTypes.INDEFINITE
-    );
+    const globalOptions: Configuration.EasyLessOptions = Configuration.getGlobalOptions(this.document);
+    const compilingMessage = StatusBarMessage.show('$(zap) Compiling less --> css', StatusBarMessageTypes.INDEFINITE);
     const startTime: number = Date.now();
     try {
       await LessCompiler.compile(this.document.fileName, this.document.getText(), globalOptions);
@@ -31,10 +26,7 @@ export default class CompileLessCommand {
       compilingMessage.dispose();
       this.lessDiagnosticCollection.set(this.document.uri, []);
 
-      StatusBarMessage.show(
-        `$(check) Less compiled in ${elapsedTime}ms`,
-        StatusBarMessageTypes.SUCCESS
-      );
+      StatusBarMessage.show(`$(check) Less compiled in ${elapsedTime}ms`, StatusBarMessageTypes.SUCCESS);
     } catch (error) {
       compilingMessage.dispose();
 
@@ -49,10 +41,7 @@ export default class CompileLessCommand {
       const diagnosis = new vscode.Diagnostic(range, message, vscode.DiagnosticSeverity.Error);
       this.lessDiagnosticCollection.set(affectedUri, [diagnosis]);
 
-      StatusBarMessage.show(
-        "$(alert) Error compiling less (more detail in Problems)",
-        StatusBarMessageTypes.ERROR
-      );
+      StatusBarMessage.show('$(alert) Error compiling less (more detail in Problems)', StatusBarMessageTypes.ERROR);
     }
   }
 
@@ -62,8 +51,8 @@ export default class CompileLessCommand {
     if (error.filename) {
       affectedUri = vscode.Uri.file(error.filename);
       const isCurrentDocument =
-        !error.filename.includes("/") &&
-        !error.filename.includes("\\") &&
+        !error.filename.includes('/') &&
+        !error.filename.includes('\\') &&
         error.filename === path.basename(this.document.fileName);
 
       if (isCurrentDocument) {
@@ -73,39 +62,17 @@ export default class CompileLessCommand {
 
     return affectedUri;
   }
-  // hello world
 
-  /*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  */
-
-  private getErrorMessageAndRange(
-    error: any
-  ): { message: string; range: vscode.Range | undefined } {
+  private getErrorMessageAndRange(error: any): {
+    message: string;
+    range: vscode.Range | undefined;
+  } {
     if (error.code) {
       // fs errors
       const fileSystemError = <vscode.FileSystemError & { path: string }>error;
       switch (fileSystemError.code) {
-        case "EACCES":
-        case "ENOENT":
+        case 'EACCES':
+        case 'ENOENT':
           return {
             message: `Cannot open file '${fileSystemError.path}'`,
             range: new vscode.Range(0, 0, 0, RANGE_EOL),

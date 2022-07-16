@@ -1,5 +1,5 @@
-import * as vscode from "vscode";
-import * as path from "path";
+import * as vscode from 'vscode';
+import * as path from 'path';
 
 export function getGlobalOptions(document: vscode.TextDocument): EasyLessOptions {
   const lessFilenamePath: path.ParsedPath = path.parse(document.fileName);
@@ -9,21 +9,19 @@ export function getGlobalOptions(document: vscode.TextDocument): EasyLessOptions
     relativeUrls: false,
   };
 
-  const configuredOptions = vscode.workspace
-    .getConfiguration("less", document.uri)
-    .get<EasyLessOptions>("compile");
+  const configuredOptions = vscode.workspace.getConfiguration('less', document.uri).get<EasyLessOptions>('compile');
   return { ...defaultOptions, ...configuredOptions };
 }
 
 export function getRootFileInfo(parsedPath: path.ParsedPath): Less.RootFileInfo {
-  parsedPath.ext = ".less";
-  parsedPath.base = parsedPath.name + ".less";
+  parsedPath.ext = '.less';
+  parsedPath.base = parsedPath.name + '.less';
 
   return {
     filename: parsedPath.base,
     currentDirectory: parsedPath.dir,
     relativeUrls: false,
-    entryPath: parsedPath.dir + "/",
+    entryPath: parsedPath.dir + '/',
     rootpath: null!,
     rootFilename: null!,
     reference: undefined!,

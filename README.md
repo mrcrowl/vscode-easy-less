@@ -138,7 +138,7 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
 
   ```less
   // relativeUrls: true
-  @import "css/feature/feature.less";
+  @import 'css/feature/feature.less';
   ```
 
   /css/feature/features.less:
@@ -154,7 +154,7 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
 
   ```less
   .feature {
-    background-image: url("css/feature/background.png");
+    background-image: url('css/feature/background.png');
   }
   ```
 
@@ -284,7 +284,7 @@ Settings are read and applied in the following order:
     > ```less
     > // out: true
     >
-    > @import "mixins.less";
+    > @import 'mixins.less';
     >
     > body,
     > html {

@@ -1,7 +1,7 @@
-import * as vscode from "vscode";
-import { StatusBarMessageTypes } from "./StatusBarMessageTypes";
+import * as vscode from 'vscode';
+import { StatusBarMessageTypes } from './StatusBarMessageTypes';
 
-const ERROR_COLOR_CSS = "rgba(255,125,0,1)";
+const ERROR_COLOR_CSS = 'rgba(255,125,0,1)';
 const ERROR_DURATION_MS = 10000;
 const SUCCESS_DURATION_MS = 1500;
 
@@ -27,7 +27,7 @@ export function show(message: string, type: StatusBarMessageTypes) {
     case StatusBarMessageTypes.ERROR:
       errorMessage = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
       errorMessage.text = message;
-      errorMessage.command = "workbench.action.showErrorsWarnings";
+      errorMessage.command = 'workbench.action.showErrorsWarnings';
       errorMessage.color = ERROR_COLOR_CSS;
       errorMessage.show();
       setTimeout(hideError, ERROR_DURATION_MS);
