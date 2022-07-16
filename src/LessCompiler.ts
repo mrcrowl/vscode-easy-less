@@ -128,19 +128,15 @@ function cleanBrowsersList(autoprefixOption: string | string[]): string[] {
 
 function intepolatePath(path: string, lessFilePath: string): string {
   if (path.includes('${workspaceFolder}')) {
-    // ###
     const lessFileUri = vscode.Uri.file(lessFilePath);
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(lessFileUri);
     if (workspaceFolder) {
-      // ###
       path = path.replace(/\$\{workspaceFolder\}/g, workspaceFolder.uri.fsPath);
     }
   }
 
   if (path.includes('${workspaceRoot}')) {
-    // ###
     if (vscode.workspace.rootPath) {
-      // ###
       path = path.replace(/\$\{workspaceRoot\}/g, vscode.workspace.rootPath);
     }
   }
