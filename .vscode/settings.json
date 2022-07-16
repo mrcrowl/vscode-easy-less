@@ -7,17 +7,7 @@
     "out": true // set this to false to include "out" folder in search results
   },
   "vitest.enable": true,
-  "typescript.format.insertSpaceAfterCommaDelimiter": true,
-  "typescript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
-  "typescript.format.insertSpaceAfterKeywordsInControlFlowStatements": true,
-  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingJsxExpressionBraces": false,
-  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": false,
-  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
-  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": false,
-  "typescript.format.insertSpaceAfterSemicolonInForStatements": true,
-  "typescript.format.insertSpaceBeforeAndAfterBinaryOperators": true,
-  "typescript.format.placeOpenBraceOnNewLineForControlBlocks": true,
-  "typescript.format.placeOpenBraceOnNewLineForFunctions": true,
   "typescript.tsdk": "./node_modules/typescript/lib",
-  "testing.automaticallyOpenPeekView": "never" // we want to use the TS server from our node_modules folder to control its version
+  "testing.automaticallyOpenPeekView": "never",
+  "vitest.showFailMessages": true // we want to use the TS server from our node_modules folder to control its version
 }
