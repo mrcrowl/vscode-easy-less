@@ -2,11 +2,11 @@
 {
   "files.exclude": {
     // "out": false, // set this to true to hide the "out" folder with the compiled JS files
-    "*.vsix": true
   },
   "search.exclude": {
     "out": true // set this to false to include "out" folder in search results
   },
+  "vitest.enable": true,
   "typescript.format.insertSpaceAfterCommaDelimiter": true,
   "typescript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
   "typescript.format.insertSpaceAfterKeywordsInControlFlowStatements": true,
@@ -18,5 +18,6 @@
   "typescript.format.insertSpaceBeforeAndAfterBinaryOperators": true,
   "typescript.format.placeOpenBraceOnNewLineForControlBlocks": true,
   "typescript.format.placeOpenBraceOnNewLineForFunctions": true,
-  "typescript.tsdk": "./node_modules/typescript/lib" // we want to use the TS server from our node_modules folder to control its version
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "testing.automaticallyOpenPeekView": "never" // we want to use the TS server from our node_modules folder to control its version
 }
