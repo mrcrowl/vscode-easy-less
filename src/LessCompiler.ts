@@ -18,22 +18,26 @@ export async function compile(
   const options: Configuration.EasyLessOptions = FileOptionsParser.parse(content, defaults);
   const lessPath: string = path.dirname(lessFile);
 
-  // main is set: compile the referenced file instead
+  // Option `main`.
+
   if (options.main) {
+    // ###
+    // When `main` is set: compile the referenced file(s) instead.
     const mainFilePaths: string[] = resolveMainFilePaths(options.main, lessPath, lessFile);
     if (mainFilePaths && mainFilePaths.length > 0) {
       for (const filePath of mainFilePaths) {
         const mainPath: path.ParsedPath = path.parse(filePath);
         const mainRootFileInfo = Configuration.getRootFileInfo(mainPath);
         const mainDefaults = { ...defaults, rootFileInfo: mainRootFileInfo };
-        const mainContent = await readFilePromise(filePath);
+        const mainContent = await fs.readFile(filePath, { encoding: 'utf-8' });
         await compile(filePath, mainContent, mainDefaults);
       }
       return;
     }
   }
 
-  // out
+  // Option `out`
+
   if (options.out === null || options.out === false) {
     // is null or false: do not compile
     return;
@@ -45,11 +49,13 @@ export async function compile(
 
   let cssRelativeFilename: string;
   if (typeof out === 'string') {
-    // out is set: output to the given file name
-    // check whether is a folder first
+    // `out` is set:
+    // - Output to the given file name.
     const interpolatedOut = intepolatePath(out.replace('$1', baseFilename).replace('$2', extension), lessFile);
 
     cssRelativeFilename = interpolatedOut;
+
+    // - Check whether is a folder first.
     const lastCharacter = cssRelativeFilename.slice(-1);
     if (lastCharacter === '/' || lastCharacter === '\\') {
       cssRelativeFilename += baseFilename + extension;
@@ -64,9 +70,11 @@ export async function compile(
   const cssFile = path.resolve(lessPath, cssRelativeFilename);
   delete options.out;
 
-  // sourceMap
+  // Option `sourceMap`
+
   let sourceMapFile: string | undefined;
   if (options.sourceMap) {
+    // ###
     // currently just has support for writing .map file to same directory
     const lessPath: string = path.parse(lessFile).dir;
     const cssPath: string = path.parse(cssFile).dir;
@@ -80,6 +88,7 @@ export async function compile(
     };
 
     if (!sourceMapOptions.sourceMapFileInline) {
+      // ###
       sourceMapFile = cssFile + '.map';
       const sourceMapFilename = path.parse(sourceMapFile).base;
       sourceMapOptions.sourceMapURL = './' + sourceMapFilename; // baseFilename + extension + ".map";
@@ -88,9 +97,11 @@ export async function compile(
     options.sourceMap = sourceMapOptions;
   }
 
-  // plugins
+  // Option `plugins`
+
   options.plugins = [];
   if (options.autoprefixer) {
+    // ###
     const LessPluginAutoPrefix = require('less-plugin-autoprefix');
     const browsers: string[] = cleanBrowsersList(options.autoprefixer);
     const autoprefixPlugin = new LessPluginAutoPrefix({ browsers });
@@ -100,10 +111,11 @@ export async function compile(
 
   options.plugins.push(new LessDocumentResolverPlugin());
 
-  // set up the parser
+  // Render to CSS.
   const output = await less.render(content, options);
   await writeFileContents(cssFile, output.css);
   if (output.map && sourceMapFile) {
+    // ###
     await writeFileContents(sourceMapFile, output.map);
   }
 }
@@ -116,15 +128,19 @@ function cleanBrowsersList(autoprefixOption: string | string[]): string[] {
 
 function intepolatePath(path: string, lessFilePath: string): string {
   if (path.includes('${workspaceFolder}')) {
+    // ###
     const lessFileUri = vscode.Uri.file(lessFilePath);
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(lessFileUri);
     if (workspaceFolder) {
+      // ###
       path = path.replace(/\$\{workspaceFolder\}/g, workspaceFolder.uri.fsPath);
     }
   }
 
   if (path.includes('${workspaceRoot}')) {
+    // ###
     if (vscode.workspace.rootPath) {
+      // ###
       path = path.replace(/\$\{workspaceRoot\}/g, vscode.workspace.rootPath);
     }
   }
@@ -150,6 +166,7 @@ function resolveMainFilePaths(
   const interpolatedMainFilePaths: string[] = mainFiles.map(mainFile => intepolatePath(mainFile, lessPath));
   const resolvedMainFilePaths: string[] = interpolatedMainFilePaths.map(mainFile => path.resolve(lessPath, mainFile));
   if (resolvedMainFilePaths.indexOf(currentLessFile) >= 0) {
+    // ###
     return []; // avoid infinite loops
   }
 
@@ -162,18 +179,16 @@ async function writeFileContents(filepath: string, content: any): Promise<void> 
   await fs.writeFile(filepath, content.toString());
 }
 
-function readFilePromise(filename: string): Promise<string> {
-  return fs.readFile(filename, { encoding: 'utf-8' });
-}
-
 function chooseExtension(options: EasyLessOptions): string {
-  if (options && options.outExt) {
+  if (options?.outExt) {
+    // ###
     if (options.outExt === '') {
+      // ###
       // Special case for no extension (no idea if anyone would really want this?).
       return '';
     }
 
-    return ensureDotPrefixed(options.outExt) || DEFAULT_EXT;
+    return ensureDotPrefixed(options.outExt) || DEFAULT_EXT; // ###
   }
 
   return DEFAULT_EXT;
@@ -181,8 +196,9 @@ function chooseExtension(options: EasyLessOptions): string {
 
 function ensureDotPrefixed(extension: string): string {
   if (extension.startsWith('.')) {
+    // ###
     return extension;
   }
 
-  return extension ? `.${extension}` : '';
+  return extension ? `.${extension}` : ''; // ###
 }
