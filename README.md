@@ -6,15 +6,6 @@ Easily work with LESS files in Visual Studio Code.
 
 ---
 
-<br>
-
-### 💘 Easy LESS is proudly sponsored by [**CodeLingo** — Get on the same page, fast!](https://marketplace.visualstudio.com/items?itemName=codelingo.codelingo)
-
-- Share links to snippets that open directly in VS Code.
-- Tighten the loop and keep alignment between design discussions and the code.
-
-<br>
-
 # Features
 
 - Generates a `.css` file each time you save a `.less` file.  
@@ -77,7 +68,7 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
 - Example:
 
   ```less
-  // out: ../dist/app.css, compress: true, sourceMap: false
+  // out: "../dist/app.css", compress: true, sourceMap: false
 
   body,
   html {
@@ -96,12 +87,18 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
 
 `out: { boolean | filepath: string | folderpath: string }`
 
-- Redirects the css output to a different file.
-- This setting can be used to override a project-wide `"out": false` setting, where you only want certain `.less` files to be generated.
+- Redirects the css output to a different file or suppresses output.
 - If `filepath` is used, but no file extension is specified, it will append `.css`
 - If `folderpath` is used, the less filename will be used, but with the `.css` extension
-- A folder path must end with a `/` (or `\` for Windows), e.g. `../css/` not `../css` (the latter is always interpreted as an extensionless filename).
-- Filepath is relative to the current file.
+- _NOTE_: A folder path must end with a `/` (or `\` for Windows), e.g. `../css/` not `../css` (the latter is always interpreted as an extensionless filename).
+- Filepath is relative to the current file, so relative paths can be used, e.g. `../../styles.css`
+- The following replacements are available:
+  - `${workspaceFolder}` — the root folder for the VS Code project containing the `.less` file.
+  - `$1` — the "base" name of the `.less` file, e.g. for `styles.css`, `$1` would be `style`.
+  - `$2` — the extension of the css file, usually `.css` unless `outExt` is used.
+- Example: `${workspaceFolder}/dist/css/final-$1$2`
+- `out: false` = don't output.
+- This setting can be used to override a project-wide `"out": false` setting, where you only want certain `.less` files to be generated.
 
 `outExt: { string }`
 
@@ -145,7 +142,7 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
   /css/feature/features.less:
 
   ```less
-  // main: ../../main.less
+  // main: "../../main.less"
   .feature {
     background-image: url(background.png);
   }
@@ -175,8 +172,8 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
   ```
 
 - See [browserslist](https://github.com/ai/browserslist#queries) documentation for further examples of browser queries.
-- **NOTE**: If used with the per-file configuration, the browsers listed _must_ be unquoted and semi-colon separated (because comma is already the directive separator): e.g.<br/>
-  `// autoprefixer: > 5%; last 2 Chrome versions; not ie 6-9, sourceMap: true, out: ../css/style.css`
+- **NOTE**: If used with the per-file configuration, the browsers listed _must_ be semi-colon separated (because comma is already the directive separator): e.g.<br/>
+  `// autoprefixer: "> 5%; last 2 Chrome versions; not ie 6-9", sourceMap: true, out: "../css/style.css"`
 
 `ieCompat: { boolean }`
 
@@ -204,7 +201,7 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
   ```
   ... or, using a per-file directive:
   ```less
-  // math: always
+  // math: "always"
   ```
   Alternatively, you can wrap your expression in parentheses:
   ```less
@@ -228,7 +225,7 @@ Settings are read and applied in the following order:
     > Add the following line to the head of your less file:
     >
     > ```javascript
-    > // out: new-file.css
+    > // out: "new-file.css"
     > ```
 
 2.  How do I redirect all css output to a specific folder?
@@ -254,7 +251,7 @@ Settings are read and applied in the following order:
     > Add a reference to the master.less file to the head of the imported less file:
     >
     > ```javascript
-    > // main: master.less
+    > // main: "master.less"
     > ```
 
 4.  How do I suppress the compilation of a single less file?
@@ -323,7 +320,7 @@ Settings are read and applied in the following order:
     > - _Per file_: by specifying the `main` setting key more than once:
     >
     >   ```less
-    >   // main: main-one.less, main: main-two.less
+    >   // main: "main-one.less", main: "main-two.less"
     >   ```
     >
     > When there is more than one `main` setting, they are guaranteed to be
@@ -331,19 +328,17 @@ Settings are read and applied in the following order:
 
 7.  Can I specify paths relative to the _workspace_, instead of relative to the _less_ file?
 
-    > Yes, the variable `${workspaceRoot}` can be used within the `main` or `out` parameters:
+    > Yes, the variable `${workspaceFolder}` can be used within the `main` or `out` parameters:
     >
     > `.vscode/settings.json`:
     >
     > ```json
     > {
     >   "less.compile": {
-    >     "main": ["${workspaceRoot}\\css\\main.less"]
+    >     "main": ["${workspaceFolder}/css/main.less"]
     >   }
     > }
     > ```
-    >
-    > Alternatively, the variable `${workspaceFolder}` can be used, which supports both multi-root workspaces and single folders.
 
 8.  How do I generate sourcemap (`*.css.map`) files?
 
@@ -357,8 +352,11 @@ Settings are read and applied in the following order:
     > }
     > ```
 
-9.  How do I resolve the error `"Inline JavaScript is not enabled. Is it set in your options?"`? > Inline JavaScript is a feature of LESS that used to be enabled by default. It was disabled by default in v3.0.0 of LESS for security reasons. You can use the `javascriptEnabled` setting to override this behaviour by setting the value to `true`. > > If you receive this error unintentionally, there are most likely one or more backticks (``) in your .less file.
-    }
+9.  How do I resolve the error `"Inline JavaScript is not enabled. Is it set in your options?"`?
+
+    > Inline JavaScript is a feature of LESS that used to be enabled by default. It was disabled by default in v3.0.0 of LESS for security reasons. You can use the `javascriptEnabled` setting to override this behaviour by setting the value to `true`.
+    >
+    > If you receive this error unintentionally, there are most likely one or more backticks (``) in your .less file.
 
 # Acknowledgements
 
