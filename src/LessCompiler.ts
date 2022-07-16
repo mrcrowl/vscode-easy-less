@@ -89,9 +89,9 @@ export async function compile(
 
     if (!sourceMapOptions.sourceMapFileInline) {
       // ###
-      sourceMapFile = cssFile + '.map';
+      sourceMapFile = `${cssFile}.map`;
       const sourceMapFilename = path.parse(sourceMapFile).base;
-      sourceMapOptions.sourceMapURL = './' + sourceMapFilename; // baseFilename + extension + ".map";
+      sourceMapOptions.sourceMapURL = `./${sourceMapFilename}`; // baseFilename + extension + ".map";
     }
 
     options.sourceMap = sourceMapOptions;
@@ -115,7 +115,6 @@ export async function compile(
   const output = await less.render(content, options);
   await writeFileContents(cssFile, output.css);
   if (output.map && sourceMapFile) {
-    // ###
     await writeFileContents(sourceMapFile, output.map);
   }
 }

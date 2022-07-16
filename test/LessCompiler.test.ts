@@ -125,5 +125,15 @@ describe('compile: characterise existing behaviour', () => {
         ['/home/mrcrowl/styles.css.map', MAP_CONTENTS],
       ]);
     });
+
+    it('should output the sourceMap inline', async () => {
+      vi.spyOn(less, 'render').mockResolvedValue(RENDER_RESULT);
+
+      const options = { sourceMap: true, sourceMapFileInline: true };
+      await compile('/home/mrcrowl/styles.less', LESS_CONTENTS, options);
+
+      expect(mkdirSpy.mock.calls).toEqual([['/home/mrcrowl', { recursive: true }]]);
+      expect(writeFileSpy.mock.calls).toEqual([['/home/mrcrowl/styles.css', CSS_CONTENTS]]);
+    });
   });
 });
