@@ -101,7 +101,6 @@ export async function compile(
 
   options.plugins = [];
   if (options.autoprefixer) {
-    // ###
     const LessPluginAutoPrefix = require('less-plugin-autoprefix');
     const browsers: string[] = cleanBrowsersList(options.autoprefixer);
     const autoprefixPlugin = new LessPluginAutoPrefix({ browsers });

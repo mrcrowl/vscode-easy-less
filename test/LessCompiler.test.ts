@@ -4,6 +4,7 @@ import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vites
 import type { WorkspaceFolder } from 'vscode';
 import { Uri, workspace } from 'vscode';
 import { compile } from '../src/LessCompiler';
+import { LessDocumentResolverPlugin } from '../src/LessDocumentResolverPlugin';
 
 vi.mock('fs/promises');
 vi.mock('less');
@@ -32,11 +33,13 @@ describe('compile: characterise existing behaviour', () => {
   });
 
   it('writes css file - default options', async () => {
-    vi.spyOn(less, 'render').mockResolvedValue(RENDER_RESULT);
+    const renderSpy = vi.spyOn(less, 'render').mockResolvedValue(RENDER_RESULT);
 
     const options = {};
     await compile('/home/mrcrowl/styles.less', LESS_CONTENTS, options);
 
+    const plugins = renderSpy.mock.lastCall?.[1]?.plugins;
+    expect(hasPlugin(plugins, LessDocumentResolverPlugin)).toBe(true);
     expect(mkdirSpy.mock.calls).toEqual([['/home/mrcrowl', { recursive: true }]]);
     expect(writeFileSpy.mock.calls).toEqual([['/home/mrcrowl/styles.css', CSS_CONTENTS]]);
   });
@@ -136,4 +139,23 @@ describe('compile: characterise existing behaviour', () => {
       expect(writeFileSpy.mock.calls).toEqual([['/home/mrcrowl/styles.css', CSS_CONTENTS]]);
     });
   });
+
+  describe('autoprefixer', () => {
+    it('should enable the autoprefixer plugin', async () => {
+      const renderSpy = vi.spyOn(less, 'render').mockResolvedValue(RENDER_RESULT);
+      const options = { autoprefixer: '> 5%, last 2 Chrome versions, not ie 6-9' };
+      await compile('/home/mrcrowl/styles.less', LESS_CONTENTS, options);
+
+      const plugins = renderSpy.mock.lastCall?.[1]?.plugins;
+      const autoprefixPluginConstructor = (await import('less-plugin-autoprefix')).default;
+      expect(hasPlugin(plugins, autoprefixPluginConstructor)).toBe(true);
+      expect(hasPlugin(plugins, LessDocumentResolverPlugin)).toBe(true);
+      expect(mkdirSpy.mock.calls).toEqual([['/home/mrcrowl', { recursive: true }]]);
+      expect(writeFileSpy.mock.calls).toEqual([['/home/mrcrowl/styles.css', CSS_CONTENTS]]);
+    });
+  });
 });
+
+function hasPlugin(plugins: undefined | unknown[], constructor: Function) {
+  return plugins?.some(p => p instanceof constructor);
+}
