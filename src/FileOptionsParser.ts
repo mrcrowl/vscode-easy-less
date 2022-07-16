@@ -1,59 +1,92 @@
 import * as Configuration from './Configuration';
 
-const SUPPORTED_PER_FILE_OPTS = {
-  main: true,
-  out: true,
-  outExt: true,
-  sourceMap: true,
-  sourceMapFileInline: true,
-  compress: true,
-  relativeUrls: true,
-  ieCompat: true,
-  autoprefixer: true,
-  javascriptEnabled: true,
-  math: true,
-};
+const SUPPORTED_PER_FILE_OPTS = new Set<string>([
+  'main',
+  'out',
+  'outExt',
+  'sourceMap',
+  'sourceMapFileInline',
+  'compress',
+  'relativeUrls',
+  'ieCompat',
+  'autoprefixer',
+  'javascriptEnabled',
+  'math',
+]);
 
-const ARRAY_OPTS: { [key: string]: any } = {
-  main: true,
-};
+const MULTI_OPTS = new Set<string>(['main']);
+
+type NonStringPrimitive = true | false | undefined | null | number;
+type Primitive = string | NonStringPrimitive;
 
 export function parse(line: string, defaults: Configuration.EasyLessOptions): Configuration.EasyLessOptions {
-  // does line start with a comment?: //
+  // Does line start with "//"?
   const commentMatch: RegExpExecArray | null = /^\s*\/\/\s*(.+)/.exec(line);
   if (!commentMatch) {
     return defaults;
   }
 
-  const options: { [key: string]: any } = { ...defaults };
-  const optionLine: string = commentMatch[1];
-  const seenKeys: { [key: string]: boolean } = {};
-  for (const item of optionLine.split(',')) {
-    const i: number = item.indexOf(':');
-    if (i < 0) {
-      continue;
-    }
-    const key: string = item.substr(0, i).trim();
-    if (!SUPPORTED_PER_FILE_OPTS.hasOwnProperty(key)) {
-      continue;
-    }
+  const options: { [key: string]: unknown } = { ...defaults };
+  const seenKeys = new Set<string>();
+  for (const item of commentMatch[1].split(',')) {
+    const [key, rawValue] = splitOption(item);
 
-    let value: string = item.substr(i + 1).trim();
-    if (value.match(/^(true|false|undefined|null|[0-9]+)$/)) {
-      value = eval(value);
-    }
+    // Guard.
+    if (!SUPPORTED_PER_FILE_OPTS.has(key)) continue;
+    if (rawValue === undefined || rawValue === '') continue;
 
-    if (seenKeys[key] === true && ARRAY_OPTS[key]) {
-      let existingValue: any = options[key];
-      if (!Array.isArray(existingValue)) {
-        existingValue = options[key] = [existingValue];
+    // Interpret value.
+    const value = parsePrimitive(rawValue);
+
+    if (seenKeys.has(key) && MULTI_OPTS.has(key)) {
+      // Handle multiple values for same key.
+      const existingValue = options[key];
+      if (Array.isArray(existingValue)) {
+        existingValue.push(value);
+      } else {
+        options[key] = [existingValue, value];
       }
-      existingValue.push(value);
     } else {
+      // Single value, or key doesn't allow an array.
       options[key] = value;
-      seenKeys[key] = true;
+      seenKeys.add(key);
     }
   }
 
   return options as Configuration.EasyLessOptions;
+}
+
+function splitOption(item: string): [string, string] {
+  const parts = item.split(':', 2);
+  const key = parts[0]?.trim();
+  const value = parts[1]?.trim();
+  return [key, value];
+}
+
+function parsePrimitive(rawValue: string): Primitive {
+  if (rawValue.match(/^(true|false|undefined|null|[0-9]+)$/)) {
+    return eval(rawValue) as NonStringPrimitive;
+  }
+
+  if (isEnclosedInQuotes(rawValue)) {
+    try {
+      return eval(rawValue);
+    } catch (e) {
+      return rawValue;
+    }
+  }
+
+  return rawValue;
+}
+
+const SINGLE_QUOTE = "'";
+const DOUBLE_QUOTE = '"';
+
+function isEnclosedInQuotes(value: unknown): value is string {
+  return (
+    typeof value === 'string' &&
+    value.length > 1 &&
+    ((value.startsWith(DOUBLE_QUOTE) && value.endsWith(DOUBLE_QUOTE)) ||
+      (value.startsWith(SINGLE_QUOTE) && value.endsWith(SINGLE_QUOTE)))
+  );
 }
