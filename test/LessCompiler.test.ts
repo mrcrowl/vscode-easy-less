@@ -180,6 +180,17 @@ describe('compile: characterise existing behaviour', () => {
       expect(writeFileSpy.mock.calls).toEqual([['/home/mrcrowl/styles.css', CSS_CONTENTS]]);
     });
   });
+
+  describe('px2vwOptions', () => {
+    it('should run px to vw', async () => {
+      vi.spyOn(less, 'render').mockResolvedValue(RENDER_RESULT);
+      const options = { px2vwOptions: { viewportWidth: 375 } };
+      await compile('/home/mrcrowl/styles.less', LESS_CONTENTS, options);
+
+      expect(mkdirSpy.mock.calls).toEqual([['/home/mrcrowl', { recursive: true }]]);
+      expect(writeFileSpy.mock.calls).toEqual([['/home/mrcrowl/styles.css', CSS_CONTENTS]]);
+    });
+  });
 });
 
 function hasPlugin(plugins: undefined | unknown[], constructor: Function) {

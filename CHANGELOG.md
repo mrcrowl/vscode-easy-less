@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.7.5
+
+- Add a new feature for px to vw.
+  ```json
+  {
+    "less.compile": {
+      "px2vwOptions": {
+        "viewportWidth": 375 // The width of your UI design draft
+      }
+    }
+  }
+  ```
+
 ## v1.7.4
 
 - Added support for optional quotes around string inline options (`main`, `out`, `math` and `autoprefixer`), so that they look more JSON-ey e.g.

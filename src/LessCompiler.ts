@@ -67,8 +67,20 @@ export async function compile(
 
   options.plugins.push(new LessDocumentResolverPlugin());
 
+  // Option `px2vwOptions`.
+  let px2vwOptions: typeof options.px2vwOptions;
+  if (options.px2vwOptions) {
+    px2vwOptions = options.px2vwOptions;
+    delete options.px2vwOptions;
+  }
+
   // Render to CSS.
   const output = await less.render(content, options);
+
+  if (px2vwOptions) {
+    const { viewportWidth } = px2vwOptions;
+    output.css = output.css.replace(/[0-9\.]+px/g, value => `${parseFloat(value) / (viewportWidth / 100)}vw`);
+  }
   await writeFileContents(cssFilepath, output.css);
   if (output.map && sourceMapFile) {
     await writeFileContents(sourceMapFile, output.map);

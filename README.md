@@ -210,6 +210,20 @@ N.B. Also available from the command palette as "Compile LESS to CSS".
   }
   ```
 
+`px2vwOptions: { viewportWidth: number }`
+
+- It can help you convert px to vw.
+- Example:
+  ```json
+  {
+    "less.compile": {
+      "px2vwOptions": {
+        "viewportWidth": 375
+      }
+    }
+  }
+  ```
+
 ## Settings Cascade Order
 
 Settings are read and applied in the following order:

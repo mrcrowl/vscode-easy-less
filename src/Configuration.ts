@@ -35,6 +35,9 @@ export interface EasyLessOptions extends Less.Options {
   autoprefixer?: string | string[];
   javascriptEnabled?: boolean;
   rootFileInfo?: Less.RootFileInfo;
+  px2vwOptions?: {
+    viewportWidth: number;
+  };
   // sourceMapURL?: string;
   // sourceMapBasepath?: string;
   // sourceMapRootpath?: string;
