@@ -14,6 +14,7 @@ export async function compile(
   lessFile: string,
   content: string,
   defaults: Configuration.EasyLessOptions,
+  useContent = false,
 ): Promise<void> {
   const options: Configuration.EasyLessOptions = FileOptionsParser.parse(content, defaults);
   const lessPath: string = path.dirname(lessFile);
@@ -66,6 +67,11 @@ export async function compile(
   }
 
   options.plugins.push(new LessDocumentResolverPlugin());
+
+  // If options.rootFileInfo is not undefined, less will use the filepath to read content again
+  if (useContent) {
+    delete options.rootFileInfo;
+  }
 
   // Render to CSS.
   const output = await less.render(content, options);

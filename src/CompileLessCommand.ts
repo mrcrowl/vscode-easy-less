@@ -9,6 +9,8 @@ import { StatusBarMessageTypes } from './StatusBarMessageTypes';
 const RANGE_EOL = 4096;
 
 export default class CompileLessCommand {
+  private hasUsedPreprocessor = false;
+
   public constructor(
     private document: vscode.TextDocument,
     private lessDiagnosticCollection: vscode.DiagnosticCollection,
@@ -21,7 +23,12 @@ export default class CompileLessCommand {
     const compilingMessage = StatusBarMessage.show('$(zap) Compiling less --> css', StatusBarMessageTypes.INDEFINITE);
     const startTime: number = Date.now();
     try {
-      await LessCompiler.compile(this.document.fileName, this.document.getText(), globalOptions);
+      await LessCompiler.compile(
+        this.document.fileName,
+        this.document.getText(),
+        globalOptions,
+        this.hasUsedPreprocessor,
+      );
       const elapsedTime: number = Date.now() - startTime;
       compilingMessage.dispose();
       this.lessDiagnosticCollection.set(this.document.uri, []);
@@ -43,6 +50,14 @@ export default class CompileLessCommand {
 
       StatusBarMessage.show('$(alert) Error compiling less (more detail in Problems)', StatusBarMessageTypes.ERROR);
     }
+  }
+
+  public setPreprocessor(preprocessor: Configuration.Preprocessor | undefined) {
+    if (preprocessor) {
+      this.document = preprocessor(this.document);
+      this.hasUsedPreprocessor = true;
+    }
+    return this;
   }
 
   private getErrorAffectedUri(error: any): vscode.Uri | undefined {
