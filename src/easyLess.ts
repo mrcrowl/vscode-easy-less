@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as Configuration from './Configuration';
 import CompileLessCommand from './CompileLessCommand';
 
 const LESS_EXT = '.less';
@@ -11,6 +12,8 @@ let lessDiagnosticCollection: vscode.DiagnosticCollection;
 export function activate(context: vscode.ExtensionContext) {
   lessDiagnosticCollection = vscode.languages.createDiagnosticCollection();
 
+  const preprocessors: Configuration.Preprocessor[] = [];
+
   // compile less command
   const compileLessSub = vscode.commands.registerCommand(COMPILE_COMMAND, () => {
     const activeEditor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
@@ -19,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       if (document.fileName.endsWith(LESS_EXT)) {
         document.save();
-        new CompileLessCommand(document, lessDiagnosticCollection).execute();
+        new CompileLessCommand(document, lessDiagnosticCollection).setPreprocessors(preprocessors).execute();
       } else {
         vscode.window.showWarningMessage('This command only works for .less files.');
       }
@@ -31,14 +34,14 @@ export function activate(context: vscode.ExtensionContext) {
   // compile less on save when file is dirty
   const didSaveEvent = vscode.workspace.onDidSaveTextDocument(document => {
     if (document.fileName.endsWith(LESS_EXT)) {
-      new CompileLessCommand(document, lessDiagnosticCollection).execute();
+      new CompileLessCommand(document, lessDiagnosticCollection).setPreprocessors(preprocessors).execute();
     }
   });
 
   // compile less on save when file is clean (clean saves don't trigger onDidSaveTextDocument, so use this as fallback)
   const willSaveEvent = vscode.workspace.onWillSaveTextDocument(e => {
     if (e.document.fileName.endsWith(LESS_EXT) && !e.document.isDirty) {
-      new CompileLessCommand(e.document, lessDiagnosticCollection).execute();
+      new CompileLessCommand(e.document, lessDiagnosticCollection).setPreprocessors(preprocessors).execute();
     }
   });
 
@@ -53,6 +56,14 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(willSaveEvent);
   context.subscriptions.push(didSaveEvent);
   context.subscriptions.push(didCloseEvent);
+
+  const registerPreprocessors = (...processors: Configuration.Preprocessor[]): void => {
+    // ... do the work here to register the preprocessor with EasyLess.
+    preprocessors.push(...processors);
+  };
+
+  // Return an API for other extensions to build upon EasyLess.
+  return { registerPreprocessors };
 }
 
 // this method is called when your extension is deactivated
