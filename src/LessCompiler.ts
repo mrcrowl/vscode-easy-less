@@ -14,7 +14,7 @@ export async function compile(
   lessFile: string,
   content: string,
   defaults: Configuration.EasyLessOptions,
-  useContent = false,
+  preprocessors: Configuration.Preprocessor[] = [],
 ): Promise<void> {
   const options: Configuration.EasyLessOptions = FileOptionsParser.parse(content, defaults);
   const lessPath: string = path.dirname(lessFile);
@@ -68,9 +68,12 @@ export async function compile(
 
   options.plugins.push(new LessDocumentResolverPlugin());
 
-  // If options.rootFileInfo is not undefined, less will use the filepath to read content again
-  if (useContent) {
+  if (preprocessors.length > 0) {
+    // If options.rootFileInfo is not undefined, less will use the filepath to read content again.
     delete options.rootFileInfo;
+    // Used to cache some variables for use by other preprocessors.
+    const ctx = new Map<string, any>();
+    content = await preprocessors.reduce(async (result, p) => p(await result, ctx), Promise.resolve(content));
   }
 
   // Render to CSS.

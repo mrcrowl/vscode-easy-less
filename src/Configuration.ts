@@ -42,4 +42,4 @@ export interface EasyLessOptions extends Less.Options {
   // sourceMapFilename?: string;
 }
 
-export type Preprocessor = (document: vscode.TextDocument) => vscode.TextDocument;
+export type Preprocessor = (lessContent: string, ctx: Map<string, any>) => Promise<string>;

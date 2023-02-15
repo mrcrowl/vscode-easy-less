@@ -12,7 +12,7 @@ let lessDiagnosticCollection: vscode.DiagnosticCollection;
 export function activate(context: vscode.ExtensionContext) {
   lessDiagnosticCollection = vscode.languages.createDiagnosticCollection();
 
-  let preprocessor: Configuration.Preprocessor | undefined = undefined;
+  const preprocessors: Configuration.Preprocessor[] = [];
 
   // compile less command
   const compileLessSub = vscode.commands.registerCommand(COMPILE_COMMAND, () => {
@@ -22,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       if (document.fileName.endsWith(LESS_EXT)) {
         document.save();
-        new CompileLessCommand(document, lessDiagnosticCollection).setPreprocessor(preprocessor).execute();
+        new CompileLessCommand(document, lessDiagnosticCollection).setPreprocessors(preprocessors).execute();
       } else {
         vscode.window.showWarningMessage('This command only works for .less files.');
       }
@@ -34,14 +34,14 @@ export function activate(context: vscode.ExtensionContext) {
   // compile less on save when file is dirty
   const didSaveEvent = vscode.workspace.onDidSaveTextDocument(document => {
     if (document.fileName.endsWith(LESS_EXT)) {
-      new CompileLessCommand(document, lessDiagnosticCollection).setPreprocessor(preprocessor).execute();
+      new CompileLessCommand(document, lessDiagnosticCollection).setPreprocessors(preprocessors).execute();
     }
   });
 
   // compile less on save when file is clean (clean saves don't trigger onDidSaveTextDocument, so use this as fallback)
   const willSaveEvent = vscode.workspace.onWillSaveTextDocument(e => {
     if (e.document.fileName.endsWith(LESS_EXT) && !e.document.isDirty) {
-      new CompileLessCommand(e.document, lessDiagnosticCollection).setPreprocessor(preprocessor).execute();
+      new CompileLessCommand(e.document, lessDiagnosticCollection).setPreprocessors(preprocessors).execute();
     }
   });
 
@@ -57,13 +57,13 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(didSaveEvent);
   context.subscriptions.push(didCloseEvent);
 
-  const registerPreprocessor = (processor: Configuration.Preprocessor): void => {
+  const registerPreprocessors = (...processors: Configuration.Preprocessor[]): void => {
     // ... do the work here to register the preprocessor with EasyLess.
-    preprocessor = processor;
+    preprocessors.push(...processors);
   };
 
   // Return an API for other extensions to build upon EasyLess.
-  return { registerPreprocessor };
+  return { registerPreprocessors };
 }
 
 // this method is called when your extension is deactivated

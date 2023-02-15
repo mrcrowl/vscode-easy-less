@@ -9,7 +9,7 @@ import { StatusBarMessageTypes } from './StatusBarMessageTypes';
 const RANGE_EOL = 4096;
 
 export default class CompileLessCommand {
-  private hasUsedPreprocessor = false;
+  private preprocessors: Configuration.Preprocessor[] = [];
 
   public constructor(
     private document: vscode.TextDocument,
@@ -23,12 +23,7 @@ export default class CompileLessCommand {
     const compilingMessage = StatusBarMessage.show('$(zap) Compiling less --> css', StatusBarMessageTypes.INDEFINITE);
     const startTime: number = Date.now();
     try {
-      await LessCompiler.compile(
-        this.document.fileName,
-        this.document.getText(),
-        globalOptions,
-        this.hasUsedPreprocessor,
-      );
+      await LessCompiler.compile(this.document.fileName, this.document.getText(), globalOptions, this.preprocessors);
       const elapsedTime: number = Date.now() - startTime;
       compilingMessage.dispose();
       this.lessDiagnosticCollection.set(this.document.uri, []);
@@ -52,11 +47,8 @@ export default class CompileLessCommand {
     }
   }
 
-  public setPreprocessor(preprocessor: Configuration.Preprocessor | undefined) {
-    if (preprocessor) {
-      this.document = preprocessor(this.document);
-      this.hasUsedPreprocessor = true;
-    }
+  public setPreprocessors(preprocessors: Configuration.Preprocessor[]) {
+    this.preprocessors = preprocessors;
     return this;
   }
 
