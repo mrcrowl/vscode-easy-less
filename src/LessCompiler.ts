@@ -69,11 +69,14 @@ export async function compile(
   options.plugins.push(new LessDocumentResolverPlugin());
 
   if (preprocessors.length > 0) {
-    // If options.rootFileInfo is not undefined, less will use the filepath to read content again.
+    // Clear options.rootFileInfo to ensure that less will not reload the content from the filepath again.
     delete options.rootFileInfo;
+
     // Used to cache some variables for use by other preprocessors.
     const ctx = new Map<string, any>();
-    content = await preprocessors.reduce(async (result, p) => p(await result, ctx), Promise.resolve(content));
+    for await (const p of preprocessors) {
+      content = await p(content, ctx);
+    }
   }
 
   // Render to CSS.

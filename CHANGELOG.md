@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.0
+
+- Added support for an extensibility API. See README for details.
+
 ## v1.7.4
 
 - Added support for optional quotes around string inline options (`main`, `out`, `math` and `autoprefixer`), so that they look more JSON-ey e.g.

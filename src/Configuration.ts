@@ -42,4 +42,4 @@ export interface EasyLessOptions extends Less.Options {
   // sourceMapFilename?: string;
 }
 
-export type Preprocessor = (lessContent: string, ctx: Map<string, any>) => Promise<string>;
+export type Preprocessor = (lessContent: string, ctx: Map<string, any>) => Promise<string> | string;

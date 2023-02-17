@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import * as Configuration from './Configuration';
+import { Preprocessor } from './Configuration';
 import CompileLessCommand from './CompileLessCommand';
 
 const LESS_EXT = '.less';
@@ -12,7 +12,7 @@ let lessDiagnosticCollection: vscode.DiagnosticCollection;
 export function activate(context: vscode.ExtensionContext) {
   lessDiagnosticCollection = vscode.languages.createDiagnosticCollection();
 
-  const preprocessors: Configuration.Preprocessor[] = [];
+  const preprocessors: Preprocessor[] = [];
 
   // compile less command
   const compileLessSub = vscode.commands.registerCommand(COMPILE_COMMAND, () => {
@@ -57,13 +57,10 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(didSaveEvent);
   context.subscriptions.push(didCloseEvent);
 
-  const registerPreprocessors = (...processors: Configuration.Preprocessor[]): void => {
-    // ... do the work here to register the preprocessor with EasyLess.
-    preprocessors.push(...processors);
+  // Return an API for other extensions to build upon EasyLESS.
+  return {
+    registerPreprocessor: (processor: Preprocessor): void => void preprocessors.push(processor),
   };
-
-  // Return an API for other extensions to build upon EasyLess.
-  return { registerPreprocessors };
 }
 
 // this method is called when your extension is deactivated

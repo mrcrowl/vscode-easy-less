@@ -2,7 +2,7 @@
   "name": "easy-less",
   "displayName": "Easy LESS",
   "description": "Auto-compile LESS to CSS on save",
-  "version": "1.7.4",
+  "version": "2.0.0",
   "publisher": "mrcrowl",
   "engines": {
     "vscode": "^1.31.0"
@@ -11,8 +11,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:less",
-    "onCommand:easyLess.compile"
+    "onLanguage:less"
   ],
   "repository": {
     "type": "git",

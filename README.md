@@ -358,9 +358,75 @@ Settings are read and applied in the following order:
     >
     > If you receive this error unintentionally, there are most likely one or more backticks (``) in your .less file.
 
+10. Can I add custom pre-processing to my less files before they are converted to CSS?
+
+    > Yes! This extension is itself extensible.
+    >
+    > It provides a very basic API that can be used by another VS Code extension to > add any custom preprocessing that is required. The input to the preprocessor
+    > is the `.less` file contents (as a `string`).
+    > The expected output is also a `string` of less syntax.
+    >
+    > ### Example:
+    >
+    > ```typescript
+    > // Within your own VS Code extension...
+    >
+    > import { extensions } from 'vscode';
+    >
+    > // API type definitions.
+    > type EasyLessAPI = { registerPreprocessor: (processor: PreprocessorFn): void };
+    > type PreprocessorFn = (less: string, ctx: Map<string, any>) => Promise<string> | string;
+    >
+    > // Overly-simplified preprocessor to convert "em" to "rem".
+    > const emToRem: PreprocessorFn = async (less: string) => {
+    >   return context.replace(/(?<=[\d\s])em\b/g, 'rem');
+    > };
+    >
+    > // Activation function for your extension.
+    > export function activate(context: vscode.ExtensionContext) {
+    >   // Get reference to EasyLESS extension.
+    >   const extension = extensions.getExtension('mrcrowl.easy-less');
+    >   if (!api) {
+    >     console.error('EasyLESS is not installed or available.');
+    >   }
+    >
+    >   // Register emToRem as a less preprocessor.
+    >   const api: EasyLessAPI = extension.exports;
+    >   api.exports.registerPreprocessor(emToRem);
+    > }
+    > }
+    > ```
+    >
+    > Preprocessor functions can also return either a plain `string` or a `Promise<string>` depending on if any async processing is required.
+    >
+    > ### Extension Activation
+    >
+    > In order for your custom extension to activate, it is important that the following activation event is declared the in extension manifest (the `package.json` file for the extension):
+    >
+    > ```jsonc
+    >   "activationEvents": [
+    >      "onLanguage:less"
+    >   ],
+    > ```
+    >
+    > This ensures that your extension is appropriately activated by VS Code.
+    >
+    > ### References
+    >
+    > Learn more about VS Code extensions and how they can be made extensibile by other extensions:
+    >
+    > - [Overview of VS Code Extesnsions](https://code.visualstudio.com/api)
+    > - [API reference — Extensibility](https://code.visualstudio.com/api/references/vscode-api#extensions)
+    > - [`extensions.getExtension()` api](https://code.visualstudio.com/api/references/vscode-api#extensions.getExtension)
+    > - [`Extension<T>` type](https://code.visualstudio.com/api/references/vscode-api#Extension<T>)
+    >
+    > ***
+    >
+    > 🎩 _HT to [northwang-lucky](https://github.com/northwang-lucky) for introducing this extensibility feature._
+
 # Acknowledgements
 
 - Configuration concepts borrowed from [Jonathan Diehl's](#https://github.com/jdiehl) [brackets-less-autocompile](https://github.com/jdiehl/brackets-less-autocompile).
-- Contributors: [CnSimonChan](https://github.com/CnSimonChan), [gprasanth](https://github.com/gprasanth), [elvis-macak](https://github.com/elvis-macak)
+- Contributors: [CnSimonChan](https://github.com/CnSimonChan), [gprasanth](https://github.com/gprasanth), [elvis-macak](https://github.com/elvis-macak), [northwang-lucky](https://github.com/northwang-lucky)
 - Feedback/ideas: [thecosss](https://github.com/thecosss), [pnkr](https://github.com/pnkr), [ep-mark](https://github.com/ep-mark),
   [icefrog](https://github.com/NateLing), , [yunfeizuo](https://github.com/yunfeizuo), [Tobyee](https://github.com/Tobyee), [sagive](https://github.com/sagive), [DifficultNick](https://github.com/DifficultNick), Alejandro L and Kenneth Davila, [linxz](https://github.com/linxz) & [docguytraining](https://github.com/docguytraining), [kranack](https://github.com/kranack)
