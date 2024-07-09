@@ -99,6 +99,13 @@ function chooseOutputFilename(options: Configuration.EasyLessOptions, lessFile: 
 
     cssRelativeFilename = interpolatedOut;
 
+    /**
+     * Get the sub-folders of the '/less/' folder to then add these sub-folders
+     * to the css 'out' folder specified in 'settings.json'
+     */
+    const subFolders = getSubfolders(lessPath);
+    cssRelativeFilename = `${cssRelativeFilename}${subFolders}`;
+
     if (isFolder(cssRelativeFilename)) {
       // Folder.
       cssRelativeFilename = `${cssRelativeFilename}${filenameNoExtension}${extension}`;
@@ -107,7 +114,9 @@ function chooseOutputFilename(options: Configuration.EasyLessOptions, lessFile: 
       cssRelativeFilename = `${cssRelativeFilename}${extension}`;
     }
   } else {
-    // `out` not set: output to the same basename as the less file
+    // `out` not set: output to '/css/' inside the same basename as the less file
+    lessPath = `${lessPath}/css/`;
+
     cssRelativeFilename = filenameNoExtension + extension;
   }
 
@@ -214,4 +223,22 @@ function ensureDotPrefixed(extension: string): string {
   }
 
   return extension ? `.${extension}` : ''; // ###
+}
+
+function getSubfolders(path: string): string {
+  const parts = path.split('/');
+  const lessIndex = parts.indexOf('less');
+
+  if (lessIndex === -1 || lessIndex === parts.length - 1) {
+    // If "less" folder doesn't exist or is the last part, return empty string
+    return '';
+  }
+
+  // Get subfolders after "less"
+  const subfolders = parts.slice(lessIndex + 1);
+
+  // Join subfolders with '/' and add '/' to the last subfolder
+  const concatenatedSubfolders = subfolders.join('/') + '/';
+
+  return concatenatedSubfolders;
 }
