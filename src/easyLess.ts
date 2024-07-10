@@ -52,10 +52,21 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
+  // compile all less files in workspace
+  const compileAllLessCommand = vscode.commands.registerCommand('extension.compileAllLess', async () => {
+    const files = await vscode.workspace.findFiles('**/*.less', '**/node_modules/**');
+    files.forEach(file => {
+      vscode.workspace.openTextDocument(file).then(document => {
+        new CompileLessCommand(document, lessDiagnosticCollection).setPreprocessors(preprocessors).execute();
+      });
+    });
+  });
+
   context.subscriptions.push(compileLessSub);
   context.subscriptions.push(willSaveEvent);
   context.subscriptions.push(didSaveEvent);
   context.subscriptions.push(didCloseEvent);
+  context.subscriptions.push(compileAllLessCommand);
 
   // Return an API for other extensions to build upon EasyLESS.
   return {

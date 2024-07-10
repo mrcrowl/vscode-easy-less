@@ -19,10 +19,22 @@
   },
   "main": "./out/easyLess",
   "contributes": {
+    "menus": {
+      "editor/context": [
+        {
+          "command": "extension.compileAllLess",
+          "group": "navigation"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "easyLess.compile",
         "title": "Compile LESS to CSS"
+      },
+      {
+        "command": "extension.compileAllLess",
+        "title": "Compile All Less Files"
       }
     ],
     "configuration": {
