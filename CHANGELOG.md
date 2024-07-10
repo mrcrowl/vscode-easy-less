@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.1
+
+-- Updated less to v4.2.0.
+
 ## v2.0.0
 
 - Added support for an extensibility API. See README for details.
