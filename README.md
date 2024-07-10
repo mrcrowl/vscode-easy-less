@@ -415,7 +415,7 @@ Settings are read and applied in the following order:
     >
     > Learn more about VS Code extensions and how they can be made extensibile by other extensions:
     >
-    > - [Overview of VS Code Extesnsions](https://code.visualstudio.com/api)
+    > - [Overview of VS Code Extensions](https://code.visualstudio.com/api)
     > - [API reference — Extensibility](https://code.visualstudio.com/api/references/vscode-api#extensions)
     > - [`extensions.getExtension()` api](https://code.visualstudio.com/api/references/vscode-api#extensions.getExtension)
     > - [`Extension<T>` type](https://code.visualstudio.com/api/references/vscode-api#Extension<T>)
