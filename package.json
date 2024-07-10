@@ -2,7 +2,7 @@
   "name": "easy-less",
   "displayName": "Easy LESS",
   "description": "Auto-compile LESS to CSS on save",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "publisher": "mrcrowl",
   "engines": {
     "vscode": "^1.31.0"
@@ -19,14 +19,6 @@
   },
   "main": "./out/easyLess",
   "contributes": {
-    "menus": {
-      "editor/context": [
-        {
-          "command": "extension.compileAllLess",
-          "group": "navigation"
-        }
-      ]
-    },
     "commands": [
       {
         "command": "easyLess.compile",

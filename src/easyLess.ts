@@ -55,6 +55,10 @@ export function activate(context: vscode.ExtensionContext) {
   // compile all less files in workspace
   const compileAllLessCommand = vscode.commands.registerCommand('extension.compileAllLess', async () => {
     const files = await vscode.workspace.findFiles('**/*.less', '**/node_modules/**');
+    if (files.length === 0) {
+      vscode.window.showInformationMessage('No .less files found in workspace.');
+      return;
+    }
     files.forEach(file => {
       vscode.workspace.openTextDocument(file).then(document => {
         new CompileLessCommand(document, lessDiagnosticCollection).setPreprocessors(preprocessors).execute();
