@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.4
+
+- Updated less to v4.4.0. (Thanks [LenAnderson](https://github.com/LenAnderson) for the nudge).
+
 ## v2.0.2
 
 - Added command to compile all less files in workspace (Thanks [ChrisWu11](https://github.com/mrcrowl/vscode-easy-less/pull/107)).
