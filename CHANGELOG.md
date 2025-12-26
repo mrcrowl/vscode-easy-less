@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.5
+
+- Updated less to v4.5.1. Fixes [#118](https://github.com/mrcrowl/vscode-easy-less/issues/118). (Thanks [sebastiaanteamcreative](https://github.com/sebastiaanteamcreative)).
+
 ## v2.0.4
 
 - Updated less to v4.4.0. (Thanks [LenAnderson](https://github.com/LenAnderson) for the nudge).
